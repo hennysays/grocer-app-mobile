@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <ImageView
+        android:id="@+id/report_image_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/img_nature1" />
+
+    <EditText
+        android:id="@+id/report_name_edit_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/report_image_view"
+        android:gravity="center"
+        android:hint="@string/report_item"
+        android:imeOptions="actionNext"
+        android:singleLine="true" >
+
+        <requestFocus />
+    </EditText>
+
+    <EditText
+        android:id="@+id/report_price_edit_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/report_name_edit_text"
+        android:layout_toLeftOf="@+id/report_quantity_edit_text"
+        android:gravity="center"
+        android:hint="@string/report_price"
+        android:imeOptions="actionNext"
+        android:inputType="numberDecimal"
+        android:singleLine="true" />
+
+    <EditText
+        android:id="@id/report_quantity_edit_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/report_name_edit_text"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:hint="@string/report_quantity"
+        android:imeOptions="actionDone"
+        android:inputType="number"
+        android:singleLine="true" />
+
+    <Spinner
+        android:id="@+id/report_units_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/report_name_edit_text"
+        android:layout_toRightOf="@id/report_quantity_edit_text"
+        android:entries="@array/report_units_array"
+        android:gravity="center" />
+
+    <Button
+        android:id="@+id/report_submit_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/report_quantity_edit_text"
+        android:text="@string/report_submit" />
+
+    <ProgressBar
+        android:id="@+id/report_progress_bar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:indeterminate="true"
+        android:visibility="gone" />
+
+</RelativeLayout>
