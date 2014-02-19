@@ -14,7 +14,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
-import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -24,10 +23,13 @@ import android.support.v4.app.Fragment;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import android.widget.AutoCompleteTextView;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -37,22 +39,25 @@ import android.widget.TextView;
 import com.hennysays.grocer.R;
 import com.hennysays.grocer.controller.Controller;
 import com.hennysays.grocer.models.GroceryItem;
-import com.hennysays.grocer.util.GrocerLocation;
+import com.hennysays.grocer.util.ReportImageSpinnerAdapter;
 
 import eu.janmuller.android.simplecropimage.CropImage;
 
 public class ReportFragment extends Fragment {
 //	private Button submitButton,addImageButton;
 	private EditText name, price, quantity;
-	private TextView locationView;
+//	private TextView locationView;
 	private Spinner units;
 	private ProgressBar progressBar;
 	private ImageView reportImage;
+	private Spinner reportImageSpinner;
 	private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
 	private static final int REQUEST_CODE_CROP_IMAGE = 101;
 	public static final int MEDIA_TYPE_IMAGE = 1;
-	private Uri fileUri;
-	private Location location;
+	private Uri fileUri;	
+	ReportImageSpinnerAdapter noImageAdapter;
+	ReportImageSpinnerAdapter withImageAdapter;
+//	private Location location;
 
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -62,19 +67,26 @@ public class ReportFragment extends Fragment {
 
 
 
-		name = (EditText) view.findViewById(R.id.report_name_edit_text);
-		price = (EditText) view.findViewById(R.id.report_price_edit_text);
-		quantity = (EditText) view.findViewById(R.id.report_quantity_edit_text);
+		name = (EditText) view.findViewById(R.id.report_name_editText);
+		price = (EditText) view.findViewById(R.id.report_price_editText);
+		quantity = (EditText) view.findViewById(R.id.report_quantity_editText);
 		units = (Spinner) view.findViewById(R.id.report_units_spinner);
-		locationView = (AutoCompleteTextView) view.findViewById(R.id.report_location_autocompletetextview);
+		String[] test = getActivity().getResources().getStringArray(R.array.report_no_image_array);
+		Log.d("GROCER",Integer.toString(test.length));
+		noImageAdapter = new ReportImageSpinnerAdapter(getActivity(), android.R.layout.simple_spinner_item, getActivity().getResources().getStringArray(R.array.report_no_image_array));
+		noImageAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		
+		withImageAdapter = new ReportImageSpinnerAdapter(getActivity(), android.R.layout.simple_spinner_item, getActivity().getResources().getStringArray(R.array.report_with_image_array));
+		withImageAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//		locationView = (AutoCompleteTextView) view.findViewById(R.id.report_location_autocompletetextview);
+		
+//		
+//		location = GrocerLocation.getCurrentLocation();
+//		String text = "lat: " + location.getLatitude() + ", long: " + location.getLongitude();
+//		locationView.setText(text);
 		
 		
-		location = GrocerLocation.getCurrentLocation();
-		String text = "lat: " + location.getLatitude() + ", long: " + location.getLongitude();
-		locationView.setText(text);
-		
-		
-		progressBar = (ProgressBar) view.findViewById(R.id.report_progress_bar);
+		progressBar = (ProgressBar) view.findViewById(R.id.report_progressBar);
 		view.findViewById(R.id.report_submit_button).setOnClickListener(onClickListener);
 //		submitButton = (Button) view.findViewById(R.id.report_submit_button);
 //		submitButton.setOnClickListener(new View.OnClickListener() {
@@ -87,7 +99,20 @@ public class ReportFragment extends Fragment {
 //		});
 
 		reportImage = (ImageView) view.findViewById(R.id.report_image_view);
-		view.findViewById(R.id.report_add_image_button).setOnClickListener(onClickListener);
+		reportImage.setOnTouchListener(new OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				reportImageSpinner.performClick();
+				return true;
+			}
+            
+		});
+		reportImageSpinner = (Spinner) view.findViewById(R.id.report_image_spinner);
+		
+		
+		reportImageSpinner.setAdapter(noImageAdapter);
+		reportImageSpinner.setOnItemSelectedListener(onItemSelectedListener);
+//		view.findViewById(R.id.report_add_image_button).setOnClickListener(onClickListener);
 //		addImageButton.setOnClickListener(new View.OnClickListener() {
 //			@Override
 //			public void onClick(View v) {
@@ -110,16 +135,6 @@ public class ReportFragment extends Fragment {
     final OnClickListener onClickListener = new OnClickListener() {
         public void onClick(final View v) {
             switch(v.getId()) {
-                case R.id.report_add_image_button:
-    				// create Intent to take a picture and return control to the calling application
-    				Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-    				fileUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE); // create a file to save the image
-    				intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); // set the image file name
-
-    				// start the image capture Intent
-    				startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);                
-                break;
                 case R.id.report_submit_button:
                 	if(validate()) {
                 		new HttpAsyncTask().execute();
@@ -129,8 +144,50 @@ public class ReportFragment extends Fragment {
         }
     };
 	
+    final OnItemSelectedListener onItemSelectedListener = new OnItemSelectedListener() {
+		@Override
+		public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,
+				long arg3) {
+			
+			final String[] noImageOptions = getActivity().getResources().getStringArray(R.array.report_no_image_array);
+			final String[] withImageOptions = getActivity().getResources().getStringArray(R.array.report_with_image_array);
+			String label = arg0.getSelectedItem().toString();
+			
+			if(label.equals(noImageOptions[1]) || label.equals(withImageOptions[2])){
+				// create Intent to take a picture and return control to the calling application
+				Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+				fileUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE); // create a file to save the image
+				intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); // set the image file name
+
+				// start the image capture Intent
+				startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+
+				((TextView)arg1).setText(null); 
+			}
+			else if(label.equals(withImageOptions[1]) ) {
+				reportImage.setImageBitmap(null);
+				reportImageSpinner.setAdapter(noImageAdapter);
+			}
+			
+			
+			
+				switch (arg0.getSelectedItemPosition()) {
+				case 0:
+
+					break;
+				}
+		}
+		@Override
+		public void onNothingSelected(AdapterView<?> arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+    };  	
+
+    
 	/** Create a file Uri for saving an image or video */
-	private static Uri getOutputMediaFileUri(int type){
+    private static Uri getOutputMediaFileUri(int type){
 		return Uri.fromFile(getOutputMediaFile(type));
 	}
 
@@ -163,6 +220,7 @@ public class ReportFragment extends Fragment {
 		return mediaFile;
 	}
 
+	
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch(requestCode) {
@@ -180,7 +238,12 @@ public class ReportFragment extends Fragment {
 			try {
 				inputStream = getActivity().getContentResolver().openInputStream(fileUri);
 				Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-				reportImage.setImageBitmap(bitmap);
+				reportImage.setImageBitmap(bitmap);				
+				reportImageSpinner.setAdapter(withImageAdapter);
+
+				
+				
+				
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
