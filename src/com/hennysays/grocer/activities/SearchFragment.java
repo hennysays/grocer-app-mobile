@@ -9,15 +9,15 @@ import org.json.JSONObject;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.facebook.FacebookRequestError;
@@ -29,7 +29,6 @@ import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
 import com.hennysays.grocer.R;
-import com.hennysays.grocer.controller.Controller;
 
 public class SearchFragment extends Fragment {
 
@@ -41,7 +40,9 @@ public class SearchFragment extends Fragment {
 	private static final int REAUTH_ACTIVITY_CODE = 100;
 	private static final String PENDING_PUBLISH_KEY = "pendingPublishReauthorization";
 	private boolean pendingPublishReauthorization = false;
-	private ProgressBar progressBar;
+	
+	private View view;
+	private AutoCompleteTextView autocompleteSearchBar;
 
 	private Session.StatusCallback callback = new Session.StatusCallback() {
 		@Override
@@ -61,19 +62,22 @@ public class SearchFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.fragment_search, container,
+		view = inflater.inflate(R.layout.fragment_search, container,
 				false);
 
-		progressBar = (ProgressBar) view.findViewById(R.id.search_progress_bar);
+		autocompleteSearchBar = (AutoCompleteTextView) view.findViewById(R.id.search_view);
 		searchButton = (Button) view.findViewById(R.id.search_button);
 		searchButton.setOnClickListener(new View.OnClickListener() {
+
 			@Override
 			public void onClick(View v) {
+				Editable query = autocompleteSearchBar.getText();
+				String queryString = query.toString();
 				
-				new HttpAsyncTask().execute();
+				Intent intent = new Intent(getActivity(), GoogleCardsActivity.class);
+				intent.putExtra("query",queryString);
+				getActivity().startActivity(intent);
 				
-//				Intent intent = new Intent(getActivity(), GoogleCardsActivity.class);
-//				getActivity().startActivity(intent);
 			}
 		});
 
@@ -215,32 +219,42 @@ public class SearchFragment extends Fragment {
 			Log.i(TAG, "Incoming deep link: " + targetUri);
 		}
 	}  
-	
-	
-	private class HttpAsyncTask extends AsyncTask<Void, Void, Integer> {
 
-		@Override
-		protected void onPreExecute() {
-			progressBar.setVisibility(View.VISIBLE);
-		}
-		@Override
-		protected Integer doInBackground(Void... params) {
-			return Controller.searchItem("Apples");
-		}
 
-		@Override
-		protected void onPostExecute(Integer result) {
-			progressBar.setVisibility(View.GONE);
-			Toast.makeText(getActivity().getBaseContext(), "Search some data!", Toast.LENGTH_LONG).show();
+//	private class HttpAsyncTask extends AsyncTask<Void, Void, Integer> {
+//		private ArrayList<GroceryItem> list = new ArrayList<GroceryItem>();
+//		
+//		@Override
+//		protected void onPreExecute() {
+//			progressBar.setVisibility(View.VISIBLE);
+//		}
+//		@Override
+//		protected Integer doInBackground(Void... param) {
+//			autocompleteSearchBar = (AutoCompleteTextView) view.findViewById(R.id.search_view);
+//			Editable query = autocompleteSearchBar.getText();
+//			String queryString = query.toString();
+//			return Controller.searchItem(queryString,list);
+//		}
+//
+//		@Override
+//		protected void onPostExecute(Integer result) {
+//			progressBar.setVisibility(View.GONE);
+//
+//			Intent intent = new Intent(getActivity(), GoogleCardsActivity.class);
+//			intent.putParcelableArrayListExtra("foundItems",list);
+//			getActivity().startActivity(intent);
+//
+////			Toast.makeText(getActivity().getBaseContext(), "Search some data!", Toast.LENGTH_LONG).show();			
+//
+//
+//			// TODO handle report item Response
+//		}
+//
+//	}
 
-			// TODO handle report item Response
-		}
 
-	}
-	
-	
-	
-	
-	
-	
+
+
+
+
 }

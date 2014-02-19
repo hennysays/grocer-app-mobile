@@ -13,6 +13,7 @@ import android.support.v7.app.ActionBarActivity;
 
 import com.facebook.AppEventsLogger;
 import com.hennysays.grocer.R;
+import com.hennysays.grocer.util.GrocerLocation;
 
 public class MainActivity extends ActionBarActivity implements ActionBar.TabListener {
 	/*
@@ -23,16 +24,19 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 	 * may be best to switch to a {@link
 	 * android.support.v4.app.FragmentStatePagerAdapter}.
 	 */
-	SectionsPagerAdapter mSectionsPagerAdapter;
+	private SectionsPagerAdapter mSectionsPagerAdapter;
 	/* The {@link ViewPager} that will host the section contents. */
-	ViewPager mViewPager;
+	private ViewPager mViewPager;
 	private final int NUM_TABS = 3;
+	private GrocerLocation location;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
+		location = new GrocerLocation(this);
+		location.startListeningForLocationUpdates();
 		// Set up the action bar.
 		final ActionBar actionBar = getSupportActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -70,9 +74,16 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 		// analytics and advertising reporting. Do so in
 		// the onResume methods of the primary Activities that an app may be
 		// launched into.
+		location.startListeningForLocationUpdates();
 		AppEventsLogger.activateApp(this);
 	}
 
+	@Override
+	public void onPause() {
+		super.onPause();
+		location.stopListeningForLocationUpdates();
+	}
+	
 	@Override
 	public void onTabSelected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
@@ -135,7 +146,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 			}
 		}
 	}
-
+	
 }
 
 //

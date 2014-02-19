@@ -4,25 +4,58 @@
     android:layout_height="wrap_content"
     android:orientation="vertical" >
 
-    <ImageView
-        android:id="@+id/report_image_view"
+    <LinearLayout
+        android:id="@+id/report_image_view_card"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/img_nature1" />
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/card_background_white"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="16dp" >
 
-    <EditText
+        <ImageView
+            android:id="@+id/report_image_view"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:scaleType="centerInside" />
+
+        <Button
+            android:id="@+id/report_add_image_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/report_add_image" />
+    </LinearLayout>
+
         android:id="@+id/report_name_edit_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@id/report_image_view"
+        android:layout_below="@id/report_image_view_card"
         android:gravity="center"
         android:hint="@string/report_item"
         android:imeOptions="actionNext"
         android:singleLine="true" >
-
-        <requestFocus />
     </EditText>
+    
+    <AutoCompleteTextView
+        android:id="@+id/report_location_autocompletetextview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/report_name_edit_text"
+        android:layout_alignBottom="@id/report_name_edit_text"
+        android:ems="10"
+        android:text="AutoCompleteTextView" >
+    </AutoCompleteTextView>
+     
+    <Button
+        android:id="@+id/report_new_location_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/report_name_edit_text"
+        android:layout_toRightOf="@id/report_location_autocompletetextview"
+        android:layout_alignParentRight="true"
+        android:text="Button" />
 
     <EditText
         android:id="@+id/report_price_edit_text"
@@ -37,6 +70,7 @@
         android:inputType="numberDecimal"
         android:singleLine="true" />
 
+    
     <EditText
         android:id="@id/report_quantity_edit_text"
         android:layout_width="wrap_content"
@@ -54,10 +88,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/report_name_edit_text"
+        android:layout_below="@id/report_new_location_button"
+        android:layout_alignBaseline="@id/report_quantity_edit_text"
         android:layout_toRightOf="@id/report_quantity_edit_text"
         android:entries="@array/report_units_array"
         android:gravity="center" />
+
 
     <Button
         android:id="@+id/report_submit_button"

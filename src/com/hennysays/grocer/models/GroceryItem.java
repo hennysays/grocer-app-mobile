@@ -9,6 +9,8 @@ public class GroceryItem implements Parcelable {
 	private String price;
 	private String quantity;
 	private String units;
+	private String image;
+	private String id;
 
 
 	public GroceryItem() {
@@ -57,6 +59,22 @@ public class GroceryItem implements Parcelable {
 		return this.units;
 	}
 	
+	public void setImage(String image) {	
+		this.image = image;
+	}
+	
+	public String getImage() {
+		return this.image;
+	}
+	
+	public void setId(String id) {
+		this.id = id;
+	}
+	
+	public String getId() {
+		return this.id;
+	}
+	
 	@Override
 	public int describeContents() {
 		return 0;
@@ -68,6 +86,8 @@ public class GroceryItem implements Parcelable {
 		dest.writeString(price);
 		dest.writeString(quantity);
 		dest.writeString(units);
+		dest.writeString(image);
+		dest.writeString(id);
 	}
 
 	private void readFromParcel(Parcel in) {
@@ -75,6 +95,8 @@ public class GroceryItem implements Parcelable {
 		price = in.readString();
 		quantity = in.readString();
 		units = in.readString();
+		image = in.readString();
+		id = in.readString();
 	}
 
 	public static final Parcelable.Creator<GroceryItem> CREATOR = new Parcelable.Creator<GroceryItem>() {

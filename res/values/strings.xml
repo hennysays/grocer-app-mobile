@@ -25,6 +25,7 @@
     <string name="report_store">Store</string>
     <string name="report_note">Note</string>
     <string name="report_submit">Submit</string>
+    <string name="report_add_image">Add Image</string>
     <string-array name="report_units_array">
         <item>N/A</item>
         <item>lb</item>
