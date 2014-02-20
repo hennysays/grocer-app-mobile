@@ -30,15 +30,19 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.hennysays.grocer.R;
+import com.hennysays.grocer.adapters.ReportNewStoreAutoCompleteAdapter;
 import com.hennysays.grocer.controller.Controller;
 import com.hennysays.grocer.models.GroceryItem;
+import com.hennysays.grocer.util.GrocerAnimations;
 import com.hennysays.grocer.util.ReportImageSpinnerAdapter;
 
 import eu.janmuller.android.simplecropimage.CropImage;
@@ -58,7 +62,9 @@ public class ReportFragment extends Fragment {
 	ReportImageSpinnerAdapter noImageAdapter;
 	ReportImageSpinnerAdapter withImageAdapter;
 //	private Location location;
-
+	private LinearLayout newStoreLayout;
+	private TextView newStoreButton;
+	private AutoCompleteTextView newStoreName;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -67,12 +73,15 @@ public class ReportFragment extends Fragment {
 
 
 
+		newStoreLayout = (LinearLayout) view.findViewById(R.id.report_new_store_info_linearLayout);
+		newStoreButton = (TextView) view.findViewById(R.id.report_add_store_button_textView);
+		newStoreButton.setOnClickListener(onClickListener);
+		newStoreName = (AutoCompleteTextView) view.findViewById(R.id.report_store_autoCompleteTextView);
+		newStoreName.setAdapter(new ReportNewStoreAutoCompleteAdapter(getActivity(),R.layout.list_item));
 		name = (EditText) view.findViewById(R.id.report_name_editText);
 		price = (EditText) view.findViewById(R.id.report_price_editText);
 		quantity = (EditText) view.findViewById(R.id.report_quantity_editText);
 		units = (Spinner) view.findViewById(R.id.report_units_spinner);
-		String[] test = getActivity().getResources().getStringArray(R.array.report_no_image_array);
-		Log.d("GROCER",Integer.toString(test.length));
 		noImageAdapter = new ReportImageSpinnerAdapter(getActivity(), android.R.layout.simple_spinner_item, getActivity().getResources().getStringArray(R.array.report_no_image_array));
 		noImageAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		
@@ -131,8 +140,8 @@ public class ReportFragment extends Fragment {
 	}
 	
 	
-    //Global On click listener for all views
-    final OnClickListener onClickListener = new OnClickListener() {
+    // On click listener for all views
+    final private OnClickListener onClickListener = new OnClickListener() {
         public void onClick(final View v) {
             switch(v.getId()) {
                 case R.id.report_submit_button:
@@ -140,11 +149,21 @@ public class ReportFragment extends Fragment {
                 		new HttpAsyncTask().execute();
                 	}                
                 break;
+                
+                case R.id.report_add_store_button_textView:
+                	GrocerAnimations animationView = new GrocerAnimations(newStoreLayout);
+                	if(newStoreLayout.isShown()){
+                		animationView.slideUp(getActivity(), newStoreLayout);
+                	}
+                	else {
+                		animationView.slideDown(getActivity(), newStoreLayout);
+                	}
+                break;
             }
         }
     };
 	
-    final OnItemSelectedListener onItemSelectedListener = new OnItemSelectedListener() {
+    final private OnItemSelectedListener onItemSelectedListener = new OnItemSelectedListener() {
 		@Override
 		public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,
 				long arg3) {

@@ -12,58 +12,111 @@
             android:id="@+id/report_name_editText"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/report_image_view"
             android:layout_alignParentLeft="true"
             android:layout_marginRight="72dp"
-            android:layout_alignBottom="@+id/report_image_view"
             android:hint="@string/report_item"
             android:imeOptions="actionNext"
+            android:inputType="textCapSentences"
             android:singleLine="true" />
-        
-		<ImageView
-		    android:id="@id/report_image_view"
-		    android:layout_width="48dp"
-		    android:layout_height="48dp"
-		    android:layout_marginTop="8dp"
-		    android:paddingBottom="4dp"
-		    android:layout_toLeftOf="@+id/report_image_spinner"
-		    android:scaleType="centerInside"
-		    android:src="@drawable/img_nature1" />
+
+        <ImageView
+            android:id="@id/report_image_view"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:layout_toLeftOf="@+id/report_image_spinner"
+            android:paddingBottom="4dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/img_nature1" />
 
         <Spinner
             android:id="@id/report_image_spinner"
             android:layout_width="20dp"
             android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/report_image_view"
             android:layout_alignParentRight="true"
-            android:layout_alignBottom="@id/report_image_view"            
             android:clickable="false" />
-
-        <EditText
-            android:id="@+id/report_store_editText"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@id/report_name_editText"
-            android:layout_marginRight="24dp"
-            android:hint="@string/report_store"
-            android:imeOptions="actionNext"
-            android:singleLine="true" />
 
         <TextView
             android:id="@+id/report_add_store_button_textView"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_alignBottom="@id/report_store_editText"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignBottom="@+id/report_store_linearLayout"
             android:layout_alignParentRight="true"
             android:layout_below="@id/report_image_spinner"
+            android:clickable="true"
+            android:ems="48"
             android:gravity="center"
             android:text="+" />
+
+        <LinearLayout
+            android:id="@id/report_store_linearLayout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/report_name_editText"
+            android:layout_marginRight="48dp"
+            android:orientation="vertical" >
+
+            <AutoCompleteTextView
+                android:id="@+id/report_store_autoCompleteTextView"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/report_store_name"
+                android:imeOptions="actionNext"
+                android:inputType="textCapSentences"
+                android:singleLine="true" />
+
+            <LinearLayout
+                android:id="@+id/report_new_store_info_linearLayout"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone" >
+
+                <EditText
+                    android:id="@+id/report_new_store_street_address_editText"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/report_store_street_address"
+                    android:imeOptions="actionNext"
+                    android:inputType="textCapSentences"
+                    android:singleLine="true" />
+
+                <EditText
+                    android:id="@+id/report_new_store_city_editText"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/report_store_city"
+                    android:inputType="textCapSentences"
+                    android:imeOptions="actionNext" />
+
+                <EditText
+                    android:id="@+id/report_new_store_province_editText"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/report_store_province"
+                    android:imeOptions="actionNext"
+                    android:inputType="textCapSentences"
+                    android:singleLine="true" />
+
+                <EditText
+                    android:id="@+id/report_new_store_country_editText"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/report_store_country"
+                    android:imeOptions="actionNext"
+                    android:inputType="textCapSentences"
+                    android:singleLine="true" />
+            </LinearLayout>
+        </LinearLayout>
 
         <TextView
             android:id="@+id/report_price_label_textView"
             android:layout_width="96dp"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_below="@id/report_store_editText"
+            android:layout_below="@id/report_store_linearLayout"
             android:gravity="center"
             android:paddingTop="12dp"
             android:text="@string/report_price_label" />
@@ -72,7 +125,7 @@
             android:id="@+id/report_quantity_label_textView"
             android:layout_width="96dp"
             android:layout_height="wrap_content"
-            android:layout_below="@id/report_store_editText"
+            android:layout_below="@id/report_store_linearLayout"
             android:layout_centerHorizontal="true"
             android:gravity="center"
             android:paddingTop="12dp"
@@ -83,7 +136,7 @@
             android:layout_width="96dp"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_below="@id/report_store_editText"
+            android:layout_below="@id/report_store_linearLayout"
             android:gravity="center"
             android:paddingTop="12dp"
             android:text="@string/report_units_label" />
@@ -140,7 +193,6 @@
             android:layout_gravity="center"
             android:indeterminate="true"
             android:visibility="gone" />
-   
     </RelativeLayout>
 
 </ScrollView>

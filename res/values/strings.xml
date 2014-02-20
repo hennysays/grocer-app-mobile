@@ -27,7 +27,11 @@
     <string name="report_units">Units</string>
     <string name="report_units_label">Units</string>
     <string name="report_unit_price">Unit Price</string>
-    <string name="report_store">Store</string>
+    <string name="report_store_name">Store Name</string>
+    <string name="report_store_street_address">Street Address</string>
+    <string name="report_store_city">City</string>
+    <string name="report_store_province">Province/State</string>
+    <string name="report_store_country">Store Country</string>
     <string name="report_note">Note</string>
     <string name="report_submit">Submit</string>
     <string name="report_add_image">Add Image</string>
