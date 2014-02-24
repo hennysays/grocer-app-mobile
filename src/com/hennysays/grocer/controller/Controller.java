@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import org.apache.http.HttpResponse;
@@ -20,6 +21,7 @@ import org.json.JSONTokener;
 
 import com.hennysays.grocer.R;
 import com.hennysays.grocer.models.GroceryItem;
+import com.hennysays.grocer.models.GroceryStore;
 import com.hennysays.grocer.util.GrocerContext;
 
 public final class Controller {
@@ -30,15 +32,25 @@ public final class Controller {
 		HttpPost httpPost = new HttpPost(url);
 
 		httpPost.addHeader(new BasicHeader("Content-Type", "application/json"));
-		JSONObject itemJson = new JSONObject();
 
 		try {			
-			
+			JSONObject itemJson = new JSONObject();	
 			itemJson.put("name", item.getName());
 			itemJson.put("price", item.getPrice());
 			itemJson.put("quantity", item.getQuantity());
 			itemJson.put("units", item.getUnits());
 			itemJson.put("image",item.getImage());
+			
+			GroceryStore store = item.getStore();
+			JSONObject storeJson = new JSONObject();
+			storeJson.put("name", store.getName());
+			storeJson.put("street", store.getStreet());
+			storeJson.put("city", store.getCity());
+			storeJson.put("province", store.getProvince());
+			storeJson.put("country", store.getCountry());
+			storeJson.put("lat",store.getLatitude().doubleValue());
+			storeJson.put("lng",store.getLongitude().doubleValue());
+			itemJson.put("store",storeJson);	
 			
 			String json = itemJson.toString();
 			StringEntity se = new StringEntity(json);
@@ -108,11 +120,28 @@ public final class Controller {
 				JSONObject jobj = finalResult.getJSONObject(i);
 				GroceryItem item = new GroceryItem();
 				item.setName(jobj.getString("name"));
-				item.setPrice(jobj.getString("price"));
-				item.setQuantity(jobj.getString("quantity"));
+				item.setPrice(new BigDecimal(jobj.getDouble("price")));
+				item.setQuantity(jobj.getInt("quantity"));
 				item.setUnits(jobj.getString("units"));
+				item.setImage(jobj.getString("image"));
 				item.setId(jobj.getString("_id"));
-				item.setImage(jobj.getString("image")); 				// Since Base64 String is too large for bundle to pass through intent, we'll read image later
+				
+				JSONObject jobjStore = jobj.getJSONObject("store");
+				GroceryStore store = new GroceryStore();
+				store.setName(jobjStore.getString("name"));
+				store.setStreet(jobjStore.getString("street"));
+				store.setCity(jobjStore.getString("city"));
+				store.setProvince(jobjStore.getString("province"));
+				store.setCountry(jobjStore.getString("country"));
+				store.setLatitude(new BigDecimal(jobjStore.getDouble("lat")));
+				store.setLongitude(new BigDecimal(jobjStore.getDouble("lng")));
+				store.setId(jobjStore.getString("_id"));
+				
+				item.setStore(store);
+				
+				
+				
+				
 				list.add(item);
 			}
 
@@ -160,11 +189,24 @@ public final class Controller {
 			}
 			JSONObject jobj = new JSONObject(sb.toString());
 			item.setName(jobj.getString("name"));
-			item.setPrice(jobj.getString("price"));
-			item.setQuantity(jobj.getString("quantity"));
+			item.setPrice(new BigDecimal(jobj.getDouble("price")));
+			item.setQuantity(jobj.getInt("quantity"));
 			item.setUnits(jobj.getString("units"));
-			item.setId(jobj.getString("_id"));
 			item.setImage(jobj.getString("image"));
+			item.setId(jobj.getString("_id"));
+			
+			JSONObject jobjStore = jobj.getJSONObject("store");
+			GroceryStore store = new GroceryStore();
+			store.setName(jobjStore.getString("name"));
+			store.setStreet(jobjStore.getString("street"));
+			store.setCity(jobjStore.getString("city"));
+			store.setProvince(jobjStore.getString("province"));
+			store.setCountry(jobjStore.getString("country"));
+			store.setLatitude(new BigDecimal(jobjStore.getDouble("lat")));
+			store.setLongitude(new BigDecimal(jobjStore.getDouble("lng")));
+			store.setId(jobjStore.getString("_id"));
+			
+			item.setStore(store);
 		}
 		// int response = Integer.parseInt(resultJson.getString("success"));
 		catch (JSONException e) {

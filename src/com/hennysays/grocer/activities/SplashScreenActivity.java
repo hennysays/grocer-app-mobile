@@ -111,7 +111,6 @@ public class SplashScreenActivity extends FragmentActivity {
 //                showFragment(SELECTION, false);
                 userSkippedLogin = false;
                 startNextActivity();
-//                startNextActivity();
             } else if (userSkippedLogin) {
 //            	showFragment(SPLASH, false);
                 startNextActivity();
@@ -132,7 +131,7 @@ public class SplashScreenActivity extends FragmentActivity {
                 // OPENED_TOKEN_UPDATED state, the selection fragment should already be showing.
                 if (state.equals(SessionState.OPENED)) {
                 	showFragment(SPLASH, false);
-//                    showFragment(SELECTION, false);
+//                    startNextActivity();
                 } else if (state.isClosed()) {
                     showFragment(SPLASH, false);
                 }

@@ -1,4 +1,4 @@
-package com.hennysays.grocer.util;
+package com.hennysays.grocer.adapters;
 
 import android.content.Context;
 import android.view.View;

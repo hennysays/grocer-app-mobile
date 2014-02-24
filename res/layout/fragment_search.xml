@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:drawableLeft="@drawable/search_icon"
         android:hint="@string/search_item_hint"
+        android:singleLine="true"
         android:imeOptions="actionSearch" >
     </AutoCompleteTextView>
 

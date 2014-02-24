@@ -71,11 +71,10 @@
                 android:id="@+id/report_new_store_info_linearLayout"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="gone" >
+                android:orientation="vertical" >
 
                 <EditText
-                    android:id="@+id/report_new_store_street_address_editText"
+                    android:id="@+id/report_new_store_street_editText"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/report_store_street_address"
@@ -88,8 +87,8 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/report_store_city"
-                    android:inputType="textCapSentences"
-                    android:imeOptions="actionNext" />
+                    android:imeOptions="actionNext"
+                    android:inputType="textCapSentences" />
 
                 <EditText
                     android:id="@+id/report_new_store_province_editText"

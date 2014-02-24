@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -29,6 +30,7 @@ import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
@@ -39,18 +41,21 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.hennysays.grocer.R;
+import com.hennysays.grocer.adapters.ReportImageSpinnerAdapter;
 import com.hennysays.grocer.adapters.ReportNewStoreAutoCompleteAdapter;
 import com.hennysays.grocer.controller.Controller;
 import com.hennysays.grocer.models.GroceryItem;
+import com.hennysays.grocer.models.GroceryStore;
 import com.hennysays.grocer.util.GrocerAnimations;
-import com.hennysays.grocer.util.ReportImageSpinnerAdapter;
+import com.hennysays.grocer.util.GrocerGoogleMapsApi;
 
 import eu.janmuller.android.simplecropimage.CropImage;
 
 public class ReportFragment extends Fragment {
-//	private Button submitButton,addImageButton;
-	private EditText name, price, quantity;
-//	private TextView locationView;
+	private EditText name, price, quantity,street,city,province,country;
+	
+	private GroceryStore groceryStore;
+//	private BigDecimal lat,lng;
 	private Spinner units;
 	private ProgressBar progressBar;
 	private ImageView reportImage;
@@ -61,53 +66,57 @@ public class ReportFragment extends Fragment {
 	private Uri fileUri;	
 	ReportImageSpinnerAdapter noImageAdapter;
 	ReportImageSpinnerAdapter withImageAdapter;
-//	private Location location;
 	private LinearLayout newStoreLayout;
 	private TextView newStoreButton;
-	private AutoCompleteTextView newStoreName;
-
+	private AutoCompleteTextView newStoreNameAutoTextView;
+	ReportNewStoreAutoCompleteAdapter newStoreAutoCompleteAdapter;
+	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_report, container,
 				false);
-
-
-
+		
 		newStoreLayout = (LinearLayout) view.findViewById(R.id.report_new_store_info_linearLayout);
 		newStoreButton = (TextView) view.findViewById(R.id.report_add_store_button_textView);
 		newStoreButton.setOnClickListener(onClickListener);
-		newStoreName = (AutoCompleteTextView) view.findViewById(R.id.report_store_autoCompleteTextView);
-		newStoreName.setAdapter(new ReportNewStoreAutoCompleteAdapter(getActivity(),R.layout.list_item));
+		
+		newStoreButton.setClickable(false);
+		
+		newStoreNameAutoTextView = (AutoCompleteTextView) view.findViewById(R.id.report_store_autoCompleteTextView);
+		newStoreAutoCompleteAdapter = new ReportNewStoreAutoCompleteAdapter(getActivity(),R.id.list_item);
+		
+		
+		newStoreNameAutoTextView.setHint("Enter a new store");
+		newStoreNameAutoTextView.setAdapter(newStoreAutoCompleteAdapter);
+		newStoreNameAutoTextView.setOnItemClickListener(onItemClickListener);
+		
+		
+		// FOR KARAN - UNCOMMENT LATER
+//		newStoreNameAutoTextView.setAdapter(null);
+		
+		
+		street = (EditText) view.findViewById(R.id.report_new_store_street_editText);
+		city = (EditText) view.findViewById(R.id.report_new_store_city_editText);
+		province = (EditText) view.findViewById(R.id.report_new_store_province_editText);
+		country = (EditText) view.findViewById(R.id.report_new_store_country_editText);
+		
 		name = (EditText) view.findViewById(R.id.report_name_editText);
 		price = (EditText) view.findViewById(R.id.report_price_editText);
 		quantity = (EditText) view.findViewById(R.id.report_quantity_editText);
 		units = (Spinner) view.findViewById(R.id.report_units_spinner);
+		
 		noImageAdapter = new ReportImageSpinnerAdapter(getActivity(), android.R.layout.simple_spinner_item, getActivity().getResources().getStringArray(R.array.report_no_image_array));
 		noImageAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		
 		withImageAdapter = new ReportImageSpinnerAdapter(getActivity(), android.R.layout.simple_spinner_item, getActivity().getResources().getStringArray(R.array.report_with_image_array));
 		withImageAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//		locationView = (AutoCompleteTextView) view.findViewById(R.id.report_location_autocompletetextview);
-		
-//		
-//		location = GrocerLocation.getCurrentLocation();
-//		String text = "lat: " + location.getLatitude() + ", long: " + location.getLongitude();
-//		locationView.setText(text);
-		
-		
 		progressBar = (ProgressBar) view.findViewById(R.id.report_progressBar);
 		view.findViewById(R.id.report_submit_button).setOnClickListener(onClickListener);
-//		submitButton = (Button) view.findViewById(R.id.report_submit_button);
-//		submitButton.setOnClickListener(new View.OnClickListener() {
-//			@Override
-//			public void onClick(View v) {
-//				if(validate()) {
-//					new HttpAsyncTask().execute();
-//				}
-//			}
-//		});
-
-		reportImage = (ImageView) view.findViewById(R.id.report_image_view);
+		
+		reportImageSpinner = (Spinner) view.findViewById(R.id.report_image_spinner);
+		reportImageSpinner.setAdapter(noImageAdapter);
+		reportImageSpinner.setOnItemSelectedListener(onItemSelectedListener);
+		fileUri = Uri.parse("android.resource://com.hennysays.grocer/drawable/img_nature1");
+		reportImage = (ImageView) view.findViewById(R.id.report_image_view);		
 		reportImage.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
@@ -116,25 +125,6 @@ public class ReportFragment extends Fragment {
 			}
             
 		});
-		reportImageSpinner = (Spinner) view.findViewById(R.id.report_image_spinner);
-		
-		
-		reportImageSpinner.setAdapter(noImageAdapter);
-		reportImageSpinner.setOnItemSelectedListener(onItemSelectedListener);
-//		view.findViewById(R.id.report_add_image_button).setOnClickListener(onClickListener);
-//		addImageButton.setOnClickListener(new View.OnClickListener() {
-//			@Override
-//			public void onClick(View v) {
-//				// create Intent to take a picture and return control to the calling application
-//				Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//
-//				fileUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE); // create a file to save the image
-//				intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); // set the image file name
-//
-//				// start the image capture Intent
-//				startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
-//			}
-//		});
 
 		return view;
 	}
@@ -154,53 +144,62 @@ public class ReportFragment extends Fragment {
                 	GrocerAnimations animationView = new GrocerAnimations(newStoreLayout);
                 	if(newStoreLayout.isShown()){
                 		animationView.slideUp(getActivity(), newStoreLayout);
+                		newStoreNameAutoTextView.setAdapter(null);
+                		
                 	}
                 	else {
                 		animationView.slideDown(getActivity(), newStoreLayout);
+                		newStoreNameAutoTextView.setHint("Enter a new store");
+                		newStoreNameAutoTextView.setAdapter(newStoreAutoCompleteAdapter);
+                		newStoreNameAutoTextView.setOnItemClickListener(onItemClickListener);
+                		
                 	}
                 break;
             }
         }
     };
 	
+    
+    final private OnItemClickListener onItemClickListener = new OnItemClickListener() {
+    	@Override
+    	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+    			long arg3) {
+    		ReportNewStoreAutoCompleteAdapter.ViewHolder holder = (ReportNewStoreAutoCompleteAdapter.ViewHolder) arg1.getTag();
+    		String reference = holder.getReference();
+    		new GooglePlacesApiHttpAsyncTask().execute(reference);
+    	}
+    	
+    };
+    
+    
     final private OnItemSelectedListener onItemSelectedListener = new OnItemSelectedListener() {
 		@Override
 		public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,
 				long arg3) {
-			
+				
 			final String[] noImageOptions = getActivity().getResources().getStringArray(R.array.report_no_image_array);
-			final String[] withImageOptions = getActivity().getResources().getStringArray(R.array.report_with_image_array);
-			String label = arg0.getSelectedItem().toString();
-			
-			if(label.equals(noImageOptions[1]) || label.equals(withImageOptions[2])){
-				// create Intent to take a picture and return control to the calling application
-				Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+				final String[] withImageOptions = getActivity().getResources().getStringArray(R.array.report_with_image_array);
+				String label = arg0.getSelectedItem().toString();
+				
+				if(label.equals(noImageOptions[1]) || label.equals(withImageOptions[2])){
+					// create Intent to take a picture and return control to the calling application
+					Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-				fileUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE); // create a file to save the image
-				intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); // set the image file name
+					fileUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE); // create a file to save the image
+					intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); // set the image file name
 
-				// start the image capture Intent
-				startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
-
-				((TextView)arg1).setText(null); 
-			}
-			else if(label.equals(withImageOptions[1]) ) {
-				reportImage.setImageBitmap(null);
-				reportImageSpinner.setAdapter(noImageAdapter);
-			}
-			
-			
-			
-				switch (arg0.getSelectedItemPosition()) {
-				case 0:
-
-					break;
+					// start the image capture Intent
+					startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
 				}
+				else if(label.equals(withImageOptions[1]) ) {
+					reportImage.setImageBitmap(null);
+					reportImageSpinner.setAdapter(noImageAdapter);
+				}
+
 		}
 		@Override
 		public void onNothingSelected(AdapterView<?> arg0) {
 			// TODO Auto-generated method stub
-			
 		}
     };  	
 
@@ -238,7 +237,6 @@ public class ReportFragment extends Fragment {
 		}
 		return mediaFile;
 	}
-
 	
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -301,6 +299,33 @@ public class ReportFragment extends Fragment {
 		return true;    
 	}
 
+	
+	private class GooglePlacesApiHttpAsyncTask extends AsyncTask<String,Void,Integer> {
+
+		@Override
+		protected Integer doInBackground(String... references) {
+			groceryStore = GrocerGoogleMapsApi.getPlaceDetails(references[0]);
+			
+			
+//			Log.d("TEST",groceryStore.getName());
+//			GroceryStore groceryStore = GrocerGoogleMapsApi.getPlaceDetails(references[0]);
+			return null;
+		}
+		
+		@Override
+		protected void onPostExecute(Integer result) {
+			if(newStoreLayout.isShown()) {
+				street.setText(groceryStore.getStreet());
+				city.setText(groceryStore.getCity());
+				province.setText(groceryStore.getProvince());
+				country.setText(groceryStore.getCountry());
+//				lat = groceryStore.getLatitude();
+//				lng = groceryStore.getLongitude();
+			}
+		}
+		
+	}
+	
 	private class HttpAsyncTask extends AsyncTask<Void, Void, Integer> {
 
 		@Override
@@ -311,10 +336,14 @@ public class ReportFragment extends Fragment {
 		protected Integer doInBackground(Void... params) {
 			GroceryItem groceryItem = new GroceryItem();
 			groceryItem.setName(name.getText().toString());
-			groceryItem.setPrice(price.getText().toString());
-			groceryItem.setQuantity(quantity.getText().toString());
+			groceryItem.setPrice(new BigDecimal(price.getText().toString()));
+			groceryItem.setQuantity(Integer.parseInt(quantity.getText().toString()));
 			groceryItem.setUnits(units.getSelectedItem().toString());
-
+			
+			groceryItem.setStore(groceryStore);
+			
+			
+			
 			// Encode image to string-based representation
 			InputStream is;
 			Bitmap bitmap = null;

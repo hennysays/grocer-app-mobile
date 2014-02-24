@@ -3,14 +3,20 @@ package com.hennysays.grocer.adapters;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.TextView;
 
+import com.hennysays.grocer.R;
+import com.hennysays.grocer.models.PlacesApiAutoCompleteStore;
 import com.hennysays.grocer.util.GrocerGoogleMapsApi;
 
-public class ReportNewStoreAutoCompleteAdapter extends ArrayAdapter<String> implements Filterable {
-	private ArrayList<String> resultList;
+public class ReportNewStoreAutoCompleteAdapter extends ArrayAdapter<PlacesApiAutoCompleteStore> implements Filterable {
+	private ArrayList<PlacesApiAutoCompleteStore> resultList;
 	
 	public ReportNewStoreAutoCompleteAdapter(Context context, int textViewResourceId) {
 		super(context, textViewResourceId);
@@ -22,7 +28,7 @@ public class ReportNewStoreAutoCompleteAdapter extends ArrayAdapter<String> impl
 	}
 	
 	@Override
-	public String getItem(int index) {
+	public PlacesApiAutoCompleteStore getItem(int index) {
 		return resultList.get(index);
 	}
 	
@@ -51,7 +57,44 @@ public class ReportNewStoreAutoCompleteAdapter extends ArrayAdapter<String> impl
                     notifyDataSetInvalidated();
                 }
             }
+			
+		    @Override
+		    public CharSequence convertResultToString(final Object resultValue) {
+		    	PlacesApiAutoCompleteStore item = (PlacesApiAutoCompleteStore) resultValue;
+		        String result = item.getItemName().toString();
+		    	return result;
+		    }
 		};
         return filter;
+	}
+	
+	@Override
+	public View getView(int position, View convertView, ViewGroup parent) {
+		View v = convertView;
+		ViewHolder holder;
+		if (v==null) {
+			v = LayoutInflater.from(getContext()).inflate(R.layout.list_item, parent, false);
+			holder = new ViewHolder();
+			holder.nameView = (TextView) v.findViewById(R.id.report_autocomplete_store_name_textView);
+			holder.locationView = (TextView) v.findViewById(R.id.report_autocomplete_store_location_textView);
+			v.setTag(holder);
+		}
+		else {
+			holder = (ViewHolder) v.getTag();
+		}
+		holder.nameView.setText(getItem(position).getItemName());
+		holder.locationView.setText(getItem(position).getItemLocation());
+		holder.reference = getItem(position).getReference();
+		return v;
+	}
+	
+	public static class ViewHolder {
+		TextView nameView;
+		TextView locationView;
+		String reference;
+		
+		public String getReference() {
+			return this.reference;
+		}
 	}
 }

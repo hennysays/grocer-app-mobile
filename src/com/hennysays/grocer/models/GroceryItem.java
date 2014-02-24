@@ -1,28 +1,35 @@
 package com.hennysays.grocer.models;
 
+import java.math.BigDecimal;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
 
 public class GroceryItem implements Parcelable {
 	private String name;
-	private String price;
-	private String quantity;
+	private BigDecimal price;
+	private int quantity;
 	private String units;
 	private String image;
+	private GroceryStore store;
 	private String id;
+	
 
 
 	public GroceryItem() {
 	}
 	
-	public GroceryItem(String name, String price, String quantity, String units) {
+	public GroceryItem(String name, BigDecimal price, int quantity, String units, String image, GroceryStore store, String id) {
 		this.name = name;
 		this.price = price;
 		this.quantity = quantity;
 		this.units = units;
+		this.image = image;
+		this.store = store;
+		this.id = id;
 	}
-
+ 
 	public GroceryItem(Parcel in) {
 		readFromParcel(in);
 	}
@@ -35,19 +42,19 @@ public class GroceryItem implements Parcelable {
 		return this.name;
 	}
 	
-	public void setPrice(String price) {
+	public void setPrice(BigDecimal price) {
 		this.price = price;
 	}
 	
-	public String getPrice() {
+	public BigDecimal getPrice() {
 		return this.price;
 	}
 	
-	public void setQuantity(String quantity) {
+	public void setQuantity(int quantity) {
 		this.quantity = quantity;
 	}
 	
-	public String getQuantity() {
+	public int getQuantity() {
 		return this.quantity;
 	}
 	
@@ -67,6 +74,14 @@ public class GroceryItem implements Parcelable {
 		return this.image;
 	}
 	
+	public void setStore(GroceryStore store) {
+		this.store = store;
+	}
+	
+	public GroceryStore getStore() {
+		return this.store;
+	}
+	
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -83,20 +98,24 @@ public class GroceryItem implements Parcelable {
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
 		dest.writeString(name);
-		dest.writeString(price);
-		dest.writeString(quantity);
+		dest.writeString(price.toString());
+		dest.writeInt(quantity);
 		dest.writeString(units);
 		dest.writeString(image);
+		dest.writeParcelable(store,flags);
 		dest.writeString(id);
+		
 	}
 
 	private void readFromParcel(Parcel in) {
 		name = in.readString();
-		price = in.readString();
-		quantity = in.readString();
+		price = new BigDecimal(in.readString());
+		quantity = in.readInt();
 		units = in.readString();
 		image = in.readString();
+		store = in.readParcelable(getClass().getClassLoader());
 		id = in.readString();
+		
 	}
 
 	public static final Parcelable.Creator<GroceryItem> CREATOR = new Parcelable.Creator<GroceryItem>() {

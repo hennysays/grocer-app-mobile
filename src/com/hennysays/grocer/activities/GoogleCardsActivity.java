@@ -1,11 +1,13 @@
 package com.hennysays.grocer.activities;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Base64;
@@ -25,6 +27,8 @@ import com.haarman.listviewanimations.swinginadapters.prepared.SwingBottomInAnim
 import com.hennysays.grocer.R;
 import com.hennysays.grocer.controller.Controller;
 import com.hennysays.grocer.models.GroceryItem;
+import com.hennysays.grocer.models.GroceryStore;
+import com.hennysays.grocer.util.GrocerLocation;
 
 public class GoogleCardsActivity extends BaseActivity implements OnDismissCallback {
 //	private ProgressBar progressBar;
@@ -96,19 +100,47 @@ public class GoogleCardsActivity extends BaseActivity implements OnDismissCallba
 			View view = convertView;
 			if (view == null) {
 				view = LayoutInflater.from(mContext).inflate(R.layout.activity_googlecards_card, parent, false);
-
 				viewHolder = new ViewHolder();
 				viewHolder.textView1 = (TextView) view.findViewById(R.id.activity_googlecards_card_textview1);
 				viewHolder.textView2 = (TextView) view.findViewById(R.id.activity_googlecards_card_textview2);
-				view.setTag(viewHolder);
-
+				viewHolder.textView3 = (TextView) view.findViewById(R.id.activity_googlecards_card_textview3);
 				viewHolder.imageView = (ImageView) view.findViewById(R.id.activity_googlecards_card_imageview);
+				view.setTag(viewHolder);
 			} else {
 				viewHolder = (ViewHolder) view.getTag();
 			}
-
+			
 			viewHolder.textView1.setText(getItem(position).getName());
-			viewHolder.textView2.setText(getItem(position).getPrice());
+			
+			BigDecimal price = getItem(position).getPrice();
+			int quantity = getItem(position).getQuantity();
+			String units = getItem(position).getUnits();
+			
+			String cost = "$" + price.toString();
+			
+			if(!units.equals("N/A")) {
+				cost +="/";
+				if(quantity > 1) {
+					cost += String.valueOf(quantity);
+				}
+				cost += " " + units;
+			}
+			viewHolder.textView2.setText(cost);
+			
+			GroceryStore store = getItem(position).getStore();
+			
+			
+			Location current = GrocerLocation.getCurrentLocation();
+			
+			float[] results = new float[1];
+			Location.distanceBetween(current.getLatitude(),current.getLongitude(),store.getLatitude().doubleValue(),store.getLongitude().doubleValue(),results);
+			String storeName = store.getName();
+			float dist = results[0]/1000;
+			BigDecimal bd = new BigDecimal(Float.toString(dist));
+	        bd = bd.setScale(2, BigDecimal.ROUND_HALF_UP);
+	        String distString = bd.toString();
+			String locationString = storeName.trim() + " " + distString + "km away";
+			viewHolder.textView3.setText(locationString);
 			setImageView(viewHolder, position);
 
 			return view;
@@ -158,6 +190,7 @@ public class GoogleCardsActivity extends BaseActivity implements OnDismissCallba
 		private static class ViewHolder {
 			TextView textView1;
 			TextView textView2;
+			TextView textView3;
 			ImageView imageView;
 		}
 	}

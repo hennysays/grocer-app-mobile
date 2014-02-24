@@ -1,5 +1,6 @@
 package com.hennysays.grocer.activities;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -9,12 +10,15 @@ import org.json.JSONObject;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -29,9 +33,11 @@ import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
 import com.hennysays.grocer.R;
+import com.hennysays.grocer.adapters.SearchItemAutoCompleteAdapter;
+import com.hennysays.grocer.controller.Controller;
+import com.hennysays.grocer.models.GroceryItem;
 
 public class SearchFragment extends Fragment {
-
 	private String TAG = "SearchFragment";
 	private UiLifecycleHelper uiHelper;
 	private Button searchButton, shareButton;
@@ -42,7 +48,7 @@ public class SearchFragment extends Fragment {
 	private boolean pendingPublishReauthorization = false;
 	
 	private View view;
-	private AutoCompleteTextView autocompleteSearchBar;
+	private AutoCompleteTextView autoCompleteSearchBar;
 
 	private Session.StatusCallback callback = new Session.StatusCallback() {
 		@Override
@@ -59,19 +65,47 @@ public class SearchFragment extends Fragment {
 		uiHelper.onCreate(savedInstanceState);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		view = inflater.inflate(R.layout.fragment_search, container,
 				false);
 
-		autocompleteSearchBar = (AutoCompleteTextView) view.findViewById(R.id.search_view);
+		ArrayList<GroceryItem> allItemsList = new ArrayList<GroceryItem>();
+		new HttpAsyncTask().execute(allItemsList);
+		
+		autoCompleteSearchBar = (AutoCompleteTextView) view.findViewById(R.id.search_view);
+		
+		autoCompleteSearchBar.setOnKeyListener(new OnKeyListener()
+		{
+		    public boolean onKey(View v, int keyCode, KeyEvent event)
+		    {
+		        if (event.getAction() == KeyEvent.ACTION_DOWN)
+		        {
+		            switch (keyCode)
+		            {
+		                case KeyEvent.KEYCODE_ENTER:
+		    				Editable query = autoCompleteSearchBar.getText();
+		    				String queryString = query.toString();
+		    				
+		    				Intent intent = new Intent(getActivity(), GoogleCardsActivity.class);
+		    				intent.putExtra("query",queryString);
+		    				getActivity().startActivity(intent);
+		                    return true;
+		                default:
+		                    break;
+		            }
+		        }
+		        return false;
+		    }
+		});
 		searchButton = (Button) view.findViewById(R.id.search_button);
 		searchButton.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				Editable query = autocompleteSearchBar.getText();
+				Editable query = autoCompleteSearchBar.getText();
 				String queryString = query.toString();
 				
 				Intent intent = new Intent(getActivity(), GoogleCardsActivity.class);
@@ -221,38 +255,27 @@ public class SearchFragment extends Fragment {
 	}  
 
 
-//	private class HttpAsyncTask extends AsyncTask<Void, Void, Integer> {
-//		private ArrayList<GroceryItem> list = new ArrayList<GroceryItem>();
-//		
-//		@Override
-//		protected void onPreExecute() {
+	private class HttpAsyncTask extends AsyncTask<ArrayList<GroceryItem>, Void, Integer> {
+		ArrayList<GroceryItem> list;
+		@Override
+		protected void onPreExecute() {
 //			progressBar.setVisibility(View.VISIBLE);
-//		}
-//		@Override
-//		protected Integer doInBackground(Void... param) {
-//			autocompleteSearchBar = (AutoCompleteTextView) view.findViewById(R.id.search_view);
-//			Editable query = autocompleteSearchBar.getText();
-//			String queryString = query.toString();
-//			return Controller.searchItem(queryString,list);
-//		}
-//
-//		@Override
-//		protected void onPostExecute(Integer result) {
-//			progressBar.setVisibility(View.GONE);
-//
-//			Intent intent = new Intent(getActivity(), GoogleCardsActivity.class);
-//			intent.putParcelableArrayListExtra("foundItems",list);
-//			getActivity().startActivity(intent);
-//
-////			Toast.makeText(getActivity().getBaseContext(), "Search some data!", Toast.LENGTH_LONG).show();			
-//
-//
-//			// TODO handle report item Response
-//		}
-//
-//	}
+		}
+		@Override
+		protected Integer doInBackground(ArrayList<GroceryItem>... param) {
+			list = param[0];
+			return Controller.searchItem("", list);
+		}
 
+		@Override
+		protected void onPostExecute(Integer result) {
+			SearchItemAutoCompleteAdapter searchItemAutoCompleteAdapter = new SearchItemAutoCompleteAdapter(getActivity(),android.R.layout.simple_spinner_item, list);
+			searchItemAutoCompleteAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			autoCompleteSearchBar.setAdapter(searchItemAutoCompleteAdapter);
+			Log.d("TEST","Testing");
+		}
 
+	}
 
 
 
