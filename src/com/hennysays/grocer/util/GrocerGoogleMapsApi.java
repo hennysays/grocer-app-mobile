@@ -43,7 +43,7 @@ public final class GrocerGoogleMapsApi {
 	        sb.append("?sensor=false&key=" + API_KEY);
 	        sb.append("&location=" + location.getLatitude() + "," + location.getLongitude());
 	        sb.append("&radius=10000");
-	        sb.append("&types=establishment");
+//	        sb.append("&types=establishment");
 	        sb.append("&components=country:ca");
 	        sb.append("&input=" + URLEncoder.encode(input, "utf8"));
 

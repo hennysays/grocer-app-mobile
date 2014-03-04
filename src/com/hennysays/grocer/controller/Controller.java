@@ -1,10 +1,14 @@
 package com.hennysays.grocer.controller;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 
 import org.apache.http.HttpResponse;
@@ -14,10 +18,16 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
+import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 
 import com.hennysays.grocer.R;
 import com.hennysays.grocer.models.GroceryItem;
@@ -31,7 +41,7 @@ public final class Controller {
 		HttpClient httpClient = new DefaultHttpClient();
 		HttpPost httpPost = new HttpPost(url);
 
-		httpPost.addHeader(new BasicHeader("Content-Type", "application/json"));
+		httpPost.addHeader(new BasicHeader("Content-Type", "application/json;charset=UTF-8"));
 
 		try {			
 			JSONObject itemJson = new JSONObject();	
@@ -53,13 +63,13 @@ public final class Controller {
 			itemJson.put("store",storeJson);	
 			
 			String json = itemJson.toString();
-			StringEntity se = new StringEntity(json);
+			StringEntity se = new StringEntity(json,HTTP.UTF_8);
 			httpPost.setEntity(se);
 			HttpResponse httpResponse = httpClient.execute(httpPost);
 
 			// RESPONSE
 			BufferedReader reader = new BufferedReader(new InputStreamReader(
-					httpResponse.getEntity().getContent(), "UTF-8"));
+					httpResponse.getEntity().getContent(), HTTP.UTF_8));
 			String str;
 			StringBuilder sb = new StringBuilder();
 			while ((str = reader.readLine()) != null) {
@@ -95,18 +105,18 @@ public final class Controller {
 		HttpClient httpClient = new DefaultHttpClient();
 		HttpPost httpPost = new HttpPost(url);
 
-		httpPost.addHeader(new BasicHeader("Content-Type", "application/json"));
+		httpPost.addHeader(new BasicHeader("Content-Type", "application/json;charset=UTF-8"));
 		JSONObject itemJson = new JSONObject();
 		try {
 
 			itemJson.put("query", query);
 			String json = itemJson.toString();
-			StringEntity se = new StringEntity(json);
+			StringEntity se = new StringEntity(json,HTTP.UTF_8);
 			httpPost.setEntity(se);
 			HttpResponse httpResponse = httpClient.execute(httpPost);
 
 			BufferedReader reader = new BufferedReader(new InputStreamReader(
-					httpResponse.getEntity().getContent(), "UTF-8"));
+					httpResponse.getEntity().getContent(), HTTP.UTF_8));
 			String str;
 			StringBuilder sb = new StringBuilder();
 			while ((str = reader.readLine()) != null) {
@@ -123,7 +133,12 @@ public final class Controller {
 				item.setPrice(new BigDecimal(jobj.getDouble("price")));
 				item.setQuantity(jobj.getInt("quantity"));
 				item.setUnits(jobj.getString("units"));
-				item.setImage(jobj.getString("image"));
+				try {
+					item.setImage(jobj.getString("image"));
+				} catch(JSONException e) {					
+					item.setImage(loadImageFromNetwork("https://s3.amazonaws.com/Grocer/logo.png"));
+				}
+				
 				item.setId(jobj.getString("_id"));
 				
 				JSONObject jobjStore = jobj.getJSONObject("store");
@@ -163,7 +178,6 @@ public final class Controller {
 		return 1;
 	}
 	
-	
 	public static GroceryItem searchItemById(String id) {
 		GroceryItem item = new GroceryItem();
 		// String url = GrocerContext.getContext().getResources().getString(R.string.url);
@@ -171,7 +185,7 @@ public final class Controller {
 		HttpClient httpClient = new DefaultHttpClient();
 		HttpPost httpPost = new HttpPost(url);
 
-		httpPost.addHeader(new BasicHeader("Content-Type", "application/json"));
+		httpPost.addHeader(new BasicHeader("Content-Type", "application/json;charset=UTF-8"));
 		JSONObject itemJson = new JSONObject();
 		try {
 
@@ -181,7 +195,7 @@ public final class Controller {
 			httpPost.setEntity(se);
 			HttpResponse httpResponse = httpClient.execute(httpPost);
 
-			BufferedReader reader = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent(), "UTF-8"));
+			BufferedReader reader = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent(), HTTP.UTF_8));
 			String str;
 			StringBuilder sb = new StringBuilder();
 			while ((str = reader.readLine()) != null) {
@@ -223,5 +237,80 @@ public final class Controller {
 		}
 		return item;
 	}
+	
+	public static Integer searchItemAutoComplete(String query, ArrayList<String> list) {
+		// String url = GrocerContext.getContext().getResources().getString(R.string.url);
+		String url = "http://grocer-app.herokuapp.com/groceryItem/searchUnique";
+		HttpClient httpClient = new DefaultHttpClient();
+		HttpPost httpPost = new HttpPost(url);
+
+		httpPost.addHeader(new BasicHeader("Content-Type", "application/json;charset=UTF-8"));
+		JSONObject itemJson = new JSONObject();
+		try {
+
+			itemJson.put("query", query);
+			String json = itemJson.toString();
+			StringEntity se = new StringEntity(json);
+			httpPost.setEntity(se);
+			HttpResponse httpResponse = httpClient.execute(httpPost);
+
+			BufferedReader reader = new BufferedReader(new InputStreamReader(
+					httpResponse.getEntity().getContent(), HTTP.UTF_8));
+			String str;
+			StringBuilder sb = new StringBuilder();
+			while ((str = reader.readLine()) != null) {
+				sb.append(str);
+			}
+
+			JSONTokener tokener = new JSONTokener(sb.toString());
+			JSONArray finalResult = new JSONArray(tokener);
+
+			for (int i = 0; i < finalResult.length(); i++) {
+				list.add(finalResult.get(i).toString());
+			}
+
+			return 1;
+		}
+		// int response = Integer.parseInt(resultJson.getString("success"));
+		catch (JSONException e) {
+			// TODO Auto-generated catch block
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 1;
+	}
+		
+	private static String loadImageFromNetwork(final String s) {
+		String bmpString = null;
+		try {
+			URL url = new URL(s);
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.connect();
+			InputStream is = conn.getInputStream();
+			Bitmap bmp = BitmapFactory.decodeStream(is);
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			bmp.compress(CompressFormat.JPEG, 100, baos);
+			byte[] data = baos.toByteArray();
+			bmpString = Base64.encodeToString(data, Base64.DEFAULT);
+			
+			
+		} catch (Exception e) {
+			System.out.println("getImage failure:" + e);
+			e.printStackTrace();
+		}
+		return bmpString;
+	}
+
+	
+	
+	
+	
 	
 }

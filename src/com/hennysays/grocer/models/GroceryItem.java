@@ -1,6 +1,7 @@
 package com.hennysays.grocer.models;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -89,6 +90,58 @@ public class GroceryItem implements Parcelable {
 	public String getId() {
 		return this.id;
 	}
+	
+	public String getPriceString() {
+		DecimalFormat df = new DecimalFormat();
+		df.setMinimumFractionDigits(2);
+		df.setMaximumFractionDigits(2);
+		String priceString = df.format(price);
+		String result = "$" + priceString;
+		if(!units.equals("N/A")) {
+			result +="/";
+			if(quantity > 1) {
+				result += String.valueOf(quantity) + " ";
+			}
+			result += units;
+		}
+		else {
+			if(quantity > 1) {
+				result += "/" + String.valueOf(quantity);
+			}
+		}
+		return result;
+
+	}
+	
+	public String getUnitPriceString() {
+		BigDecimal unitPrice = null;
+		if(units.equals("ml") || units.equals("g")) {
+			BigDecimal test = new BigDecimal(quantity);
+			BigDecimal test2 = new BigDecimal(100);
+//			unitPrice = price.divide(new BigDecimal(quantity)).multiply(new BigDecimal(100));
+			try {
+			unitPrice = price.divide(test,5);
+			unitPrice = unitPrice.multiply(test2);
+			}
+			catch(ArithmeticException e) {
+				e.printStackTrace();
+			}
+		}
+		else {
+			unitPrice = price.divide(new BigDecimal(quantity));
+		}
+		DecimalFormat df = new DecimalFormat();
+		df.setMinimumFractionDigits(2);
+		df.setMaximumFractionDigits(2);
+		String priceString = df.format(unitPrice);
+		String result = "$" + priceString;
+		if(!units.equals("N/A")) {
+			result +="/" + units;
+		}
+		return result;
+
+	}
+	
 	
 	@Override
 	public int describeContents() {

@@ -7,16 +7,18 @@
     <string name="settings">Settings</string>
     <string name="app_name">Grocer</string>
     <string name="action_settings">Settings</string>
+    <string name="action_logout">Log Out</string>
     <string name="search_menu">Search</string>
     <string name="search_item_hint">Search for item</string>
     <string name="search_location_hint">Set Location</string>
     <string name="search_button_label">Search</string>
-    <string name="report_menu">Report</string>
+    <string name="report_menu">Suggest a deal</string>
     <string name="grocery_list_menu">Grocery List</string>
     <string name="googlecards">Google cards example</string>
     <string name="share">Share</string>
     <string name="app_id">1393608100901845</string>
     <string name="url">http://grocer-app.herokuapp.com/groceryItem/add</string>
+    <string name="search_no_results">No results found!</string>
     
     
     <string name="report_item">Item</string>
@@ -36,6 +38,12 @@
     <string name="report_submit">Submit</string>
     <string name="report_add_image">Add Image</string>
 
+    <string-array name="navigation_menu">
+        <item>Search</item>
+        <item>Suggest a deal</item>
+        <item>Grocery list</item>
+    </string-array>
+    
     <string-array name="report_units_array">
         <item>N/A</item>
         <item>lb</item>

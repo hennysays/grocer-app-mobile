@@ -28,7 +28,7 @@
             android:layout_toLeftOf="@+id/report_image_spinner"
             android:paddingBottom="4dp"
             android:scaleType="centerInside"
-            android:src="@drawable/img_nature1" />
+            android:src="@drawable/grocer_stock_photo" />
 
         <Spinner
             android:id="@id/report_image_spinner"

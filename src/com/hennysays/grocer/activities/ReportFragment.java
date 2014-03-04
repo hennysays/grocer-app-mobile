@@ -39,6 +39,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.hennysays.grocer.R;
 import com.hennysays.grocer.adapters.ReportImageSpinnerAdapter;
@@ -52,6 +53,7 @@ import com.hennysays.grocer.util.GrocerGoogleMapsApi;
 import eu.janmuller.android.simplecropimage.CropImage;
 
 public class ReportFragment extends Fragment {
+	public static final String TAG = "Report Fragment";
 	private EditText name, price, quantity,street,city,province,country;
 	
 	private GroceryStore groceryStore;
@@ -71,11 +73,11 @@ public class ReportFragment extends Fragment {
 	private AutoCompleteTextView newStoreNameAutoTextView;
 	ReportNewStoreAutoCompleteAdapter newStoreAutoCompleteAdapter;
 	
+	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+			Bundle savedInstanceState) {		
 		View view = inflater.inflate(R.layout.fragment_report, container,
 				false);
-		
 		newStoreLayout = (LinearLayout) view.findViewById(R.id.report_new_store_info_linearLayout);
 		newStoreButton = (TextView) view.findViewById(R.id.report_add_store_button_textView);
 		newStoreButton.setOnClickListener(onClickListener);
@@ -132,6 +134,7 @@ public class ReportFragment extends Fragment {
 	
     // On click listener for all views
     final private OnClickListener onClickListener = new OnClickListener() {
+    	@Override
         public void onClick(final View v) {
             switch(v.getId()) {
                 case R.id.report_submit_button:
@@ -190,10 +193,15 @@ public class ReportFragment extends Fragment {
 
 					// start the image capture Intent
 					startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+					reportImageSpinner.setSelection(0);
 				}
 				else if(label.equals(withImageOptions[1]) ) {
 					reportImage.setImageBitmap(null);
 					reportImageSpinner.setAdapter(noImageAdapter);
+					reportImageSpinner.setSelection(0);
+				} else if(label.equals(noImageOptions[2]) || label.equals(withImageOptions[3])) {
+					Toast.makeText(getActivity(),"TODO: Feature not implemented yet", Toast.LENGTH_SHORT).show();
+					reportImageSpinner.setSelection(0);
 				}
 
 		}

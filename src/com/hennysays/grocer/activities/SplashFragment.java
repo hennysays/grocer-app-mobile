@@ -21,7 +21,7 @@ public class SplashFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.splash, container, false);
+        View view = inflater.inflate(R.layout.fragment_splash, container, false);
 
         skipLoginButton = (Button) view.findViewById(R.id.skip_login_button);
         skipLoginButton.setOnClickListener(new View.OnClickListener() {

@@ -9,14 +9,13 @@ import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 
-import com.hennysays.grocer.models.GroceryItem;
 import com.hennysays.grocer.util.GrocerUtilities;
 
 public class SearchItemAutoCompleteAdapter extends ArrayAdapter<SpannableString> implements Filterable {
-	private ArrayList<GroceryItem> allItemsList; 
+	private ArrayList<String> allItemsList; 
 	private ArrayList<SpannableString> resultList;
 	
-	public SearchItemAutoCompleteAdapter(Context context, int textViewResourceId, ArrayList<GroceryItem> allItemsList) {
+	public SearchItemAutoCompleteAdapter(Context context, int textViewResourceId, ArrayList<String> allItemsList) {
 		super(context, textViewResourceId);
 		this.allItemsList = allItemsList;
 		
@@ -40,7 +39,7 @@ public class SearchItemAutoCompleteAdapter extends ArrayAdapter<SpannableString>
                 FilterResults filterResults = new FilterResults();
                 if (constraint != null) {
                     for (int i = 0; i < allItemsList.size(); i++) {
-                        SpannableString itemName = new SpannableString(allItemsList.get(i).getName());
+                        SpannableString itemName = new SpannableString(allItemsList.get(i));
                         if (itemName.toString().toUpperCase().contains(constraint.toString().toUpperCase()))  {
                         	GrocerUtilities.highlightCharsInSentence(itemName, constraint.toString(), Color.MAGENTA);
                             resultList.add(itemName);
