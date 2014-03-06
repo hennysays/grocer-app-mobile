@@ -2,11 +2,26 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
-    <TextView
+    android:orientation="vertical"
+    android:paddingTop="@dimen/paddingTop" >
+
+    <Button
+        android:id="@+id/activity_animateremoval_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/removeselected" />
+
+    <ListView
+        android:id="@+id/activity_animateremoval_listview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="@null" />
+
+</LinearLayout>
+
+    <!-- <TextView
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="TODO: Feature not implemented yet" />
-</LinearLayout>
+        android:text="TODO: Feature not implemented yet" /> -->

@@ -1,5 +1,6 @@
 package com.hennysays.grocer.activities;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -12,8 +13,9 @@ import org.json.JSONObject;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -31,6 +33,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnKeyListener;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ImageView;
@@ -46,6 +49,8 @@ import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.hennysays.grocer.R;
 import com.hennysays.grocer.adapters.SearchItemAutoCompleteAdapter;
 import com.hennysays.grocer.controller.Controller;
@@ -71,6 +76,39 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 	private GrocerLocation mLocation;
 	private ActionBar mActionBar;
 
+	public static final String PREFS_NAME = "MyPrefsFile";
+	public static final String GROCERY_LIST = "GroceryList";
+	private ArrayList<GroceryItem> mGroceryList;
+	private SharedPreferences prefs;
+	
+	public boolean addToGroceryList(GroceryItem item) {
+		if (mGroceryList.contains(item)) {
+			return false;
+		}
+		else {
+			mGroceryList.add(item);
+			prefs = getSharedPreferences(PREFS_NAME,Context.MODE_PRIVATE);
+			Editor editor = prefs.edit();
+			editor.putString(GROCERY_LIST,new Gson().toJson(mGroceryList));
+			editor.commit();
+			return true;
+		}
+	}
+	
+	public void removeFromGroceryList(int indx) {
+		mGroceryList.remove(indx);
+		prefs = getSharedPreferences(PREFS_NAME,Context.MODE_PRIVATE);
+		Editor editor = prefs.edit();
+		editor.putString(GROCERY_LIST,new Gson().toJson(mGroceryList));
+		editor.commit();
+	}
+	
+	
+	
+	public ArrayList<GroceryItem> getGroceryList() {
+		return mGroceryList;
+	}
+	
 	//FACEBOOK INTEGRATION
 	public boolean isFbLoggedIn = false;
 	private UiLifecycleHelper uiHelper;
@@ -89,10 +127,22 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 	@SuppressLint("InlinedApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		if (Build.VERSION.SDK_INT >= 19) {
-			getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-		}
+//		if (Build.VERSION.SDK_INT >= 19) {
+//			getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+//		}
 		super.onCreate(savedInstanceState);
+		prefs = getSharedPreferences(PREFS_NAME,Context.MODE_PRIVATE);
+		String glist = prefs.getString(GROCERY_LIST,"");
+		 if(glist.equals("")) {
+			 mGroceryList = new ArrayList<GroceryItem>();
+		 }
+		 else {
+			 Type listType = new TypeToken<ArrayList<GroceryItem>>(){}.getType();
+			 Gson gson = new Gson();
+			 mGroceryList = gson.fromJson(glist,listType);			 
+		 }
+		
+		
 		mContext = this;
 		// Set up the action bar.
 		mActionBar = getSupportActionBar();
@@ -203,11 +253,11 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 		// When the given tab is selected, switch to the corresponding page in
 		// the ViewPager.
 		switch(tab.getPosition()) {
-		case 1:
-			mActionBar.setDisplayShowCustomEnabled(false);
+		case 0:
+			mActionBar.setDisplayShowCustomEnabled(true);
 			break;
 		default:
-			mActionBar.setDisplayShowCustomEnabled(true);
+			mActionBar.setDisplayShowCustomEnabled(false);
 			break;
 		}
 		mViewPager.setCurrentItem(tab.getPosition());
@@ -319,10 +369,14 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 			return;
 		}
 		
-		if(mSectionsPagerAdapter.getItem(0) instanceof SearchResultsFragment) {
+		
+//		Fragment page = getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + mViewPager.getCurrentItem());
+		
+		if(mViewPager.getCurrentItem()==0 && mSectionsPagerAdapter.getItem(0) instanceof SearchResultsFragment) {
 			SearchResultsFragment.listener.onSwitchToNextFragment();
 			return;
 		}
+		
 		super.onBackPressed();
 	}
 
@@ -350,6 +404,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 			postParams.putString("name", "Grocery Item Found!");
 			//		postParams.putString("caption", "Testing");
 			postParams.putString("description", description);
+//			postParams.putString("link", "https://www.google.com");
 			postParams.putString("link", "https://www.facebook.com/grocerappmtl");
 			//		postParams.putString("picture", "http://grocer-app.herokuapp.com/images/logo.png");
 			// #32a96e, #3ac47f color codes
@@ -382,9 +437,9 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 			RequestAsyncTask task = new RequestAsyncTask(request);
 			task.execute();
 
-			request = new Request(session, "713066668746180/feed", postParams, HttpMethod.POST, callback);
-			task = new RequestAsyncTask(request);
-			task.execute();
+//			request = new Request(session, "713066668746180/feed", postParams, HttpMethod.POST, callback); // Grocer Page
+//			task = new RequestAsyncTask(request);
+//			task.execute();
 		}
 	}
 
@@ -456,8 +511,14 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
 		@Override
 		protected void onPostExecute(Integer result) {			
-				SearchItemAutoCompleteAdapter searchItemAutoCompleteAdapter = new SearchItemAutoCompleteAdapter(mContext, android.R.layout.simple_spinner_item, list);
-				searchItemAutoCompleteAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+				SearchItemAutoCompleteAdapter searchItemAutoCompleteAdapter = new SearchItemAutoCompleteAdapter(mContext, R.layout.list_item_search, list);
+				searchItemAutoCompleteAdapter.setDropDownViewResource(R.layout.list_item_search); // SetDropDownViewResource not necessary for AutoCompleteTextView
+//				searchItemAutoCompleteAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+				ImageView home = (ImageView) findViewById(android.R.id.home); 
+				ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) home.getLayoutParams();
+				int horizontalOffset = home.getWidth()+lp.rightMargin + clearableAutoCompleteSearchBarTextView.getPaddingLeft();
+				clearableAutoCompleteSearchBarTextView.setDropDownHorizontalOffset(-horizontalOffset);
 				clearableAutoCompleteSearchBarTextView.setAdapter(searchItemAutoCompleteAdapter);
 				clearableAutoCompleteSearchBarTextView.setOnClearListener(new OnClearListener() {	
 					@Override

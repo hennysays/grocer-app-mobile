@@ -31,6 +31,8 @@ public class SearchItemAutoCompleteAdapter extends ArrayAdapter<SpannableString>
 		return resultList.get(index);
 	}
 	
+	
+	
 	public Filter getFilter() {
 		Filter filter = new Filter() {
 			@Override
@@ -38,6 +40,7 @@ public class SearchItemAutoCompleteAdapter extends ArrayAdapter<SpannableString>
 				resultList = new ArrayList<SpannableString>();
                 FilterResults filterResults = new FilterResults();
                 if (constraint != null) {
+                	resultList.add(new SpannableString("Search for \"" + constraint + "\""));
                     for (int i = 0; i < allItemsList.size(); i++) {
                         SpannableString itemName = new SpannableString(allItemsList.get(i));
                         if (itemName.toString().toUpperCase().contains(constraint.toString().toUpperCase()))  {

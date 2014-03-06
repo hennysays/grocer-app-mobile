@@ -34,10 +34,46 @@ public class SearchResultsAdapter extends ArrayAdapter<GroceryItem> {
 	}
 
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
+	public View getView(final int position, View convertView, ViewGroup parent) {
 		ViewHolder viewHolder;
 		View view = convertView;
 
+		OnClickListener onClickListener = new OnClickListener() {
+			@Override
+			public void onClick(final View v) {
+				ViewHolder2 viewHolder2 = (ViewHolder2) v.getTag();
+				GroceryItem item = viewHolder2.item;
+				switch(v.getId()) {
+				case R.id.add_icon:
+					
+					if(((MainActivity) mContext).addToGroceryList(getItem(position))) {
+						Toast.makeText(mContext,"Item added to list", Toast.LENGTH_SHORT).show();	
+					}
+					else {
+						Toast.makeText(mContext,"Your grocery list already contains that item!", Toast.LENGTH_SHORT).show();
+					}
+//					Toast.makeText(mContext,"TODO: Feature not implemented yet", Toast.LENGTH_SHORT).show();				
+					break;
+				case R.id.place_icon:
+					//				viewHolder2.googleMapsLocation = "http://maps.google.com/maps?q=loc:" + getItem(position).getStore().getLatitude().toString() + "," + getItem(position).getStore().getLongitude().toString() + " (" + getItem(position).getStore().getName() + ")";
+					String googleMapsLocation = "geo:0,0?q=" + item.getStore().getLatitude().toString() + "," + item.getStore().getLongitude().toString() + " (" + item.getStore().getName() + ")";
+					Uri googlemaps =  Uri.parse(googleMapsLocation);
+					showMap(googlemaps);
+					break;
+				case R.id.share_icon:
+					Session session = Session.getActiveSession();
+					if(session!=null && session.isOpened()) {
+						((MainActivity) mContext).publishStory(item);
+					}
+					else {
+						Toast.makeText(mContext,"Not Logged In", Toast.LENGTH_SHORT).show();
+					}
+					break;
+				}
+			}
+		};
+		
+		
 		if (view == null) {
 			view = LayoutInflater.from(mContext).inflate(R.layout.fragment_search_results_card, parent, false);
 			viewHolder = new ViewHolder();
@@ -91,33 +127,6 @@ public class SearchResultsAdapter extends ArrayAdapter<GroceryItem> {
 		return view;
 	}
 
-	private OnClickListener onClickListener = new OnClickListener() {
-		@Override
-		public void onClick(final View v) {
-			ViewHolder2 viewHolder2 = (ViewHolder2) v.getTag();
-			GroceryItem item = viewHolder2.item;
-			switch(v.getId()) {
-			case R.id.add_icon:
-				Toast.makeText(mContext,"TODO: Feature not implemented yet", Toast.LENGTH_SHORT).show();				
-				break;
-			case R.id.place_icon:
-				//				viewHolder2.googleMapsLocation = "http://maps.google.com/maps?q=loc:" + getItem(position).getStore().getLatitude().toString() + "," + getItem(position).getStore().getLongitude().toString() + " (" + getItem(position).getStore().getName() + ")";
-				String googleMapsLocation = "geo:0,0?q=" + item.getStore().getLatitude().toString() + "," + item.getStore().getLongitude().toString() + " (" + item.getStore().getName() + ")";
-				Uri googlemaps =  Uri.parse(googleMapsLocation);
-				showMap(googlemaps);
-				break;
-			case R.id.share_icon:
-				Session session = Session.getActiveSession();
-				if(session!=null && session.isOpened()) {
-					((MainActivity) mContext).publishStory(item);
-				}
-				else {
-					Toast.makeText(mContext,"Not Logged In", Toast.LENGTH_SHORT).show();
-				}
-				break;
-			}
-		}
-	};
 
 	private void setImageView(final ViewHolder viewHolder, int position) {
 	

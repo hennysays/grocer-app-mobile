@@ -52,6 +52,9 @@ import com.hennysays.grocer.util.GrocerGoogleMapsApi;
 
 import eu.janmuller.android.simplecropimage.CropImage;
 
+
+/* This fragment is not well designed, I'll need to redo it later,
+ * but for the time being I've hacked my way through to make it work...*/
 public class ReportFragment extends Fragment {
 	public static final String TAG = "Report Fragment";
 	private EditText name, price, quantity,street,city,province,country;
@@ -168,7 +171,7 @@ public class ReportFragment extends Fragment {
     	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
     			long arg3) {
     		ReportNewStoreAutoCompleteAdapter.ViewHolder holder = (ReportNewStoreAutoCompleteAdapter.ViewHolder) arg1.getTag();
-    		String reference = holder.getReference();
+    		String reference = holder.reference;
     		new GooglePlacesApiHttpAsyncTask().execute(reference);
     	}
     	

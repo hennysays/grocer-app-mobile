@@ -130,9 +130,24 @@ public final class Controller {
 				JSONObject jobj = finalResult.getJSONObject(i);
 				GroceryItem item = new GroceryItem();
 				item.setName(jobj.getString("name"));
+				try {
 				item.setPrice(new BigDecimal(jobj.getDouble("price")));
-				item.setQuantity(jobj.getInt("quantity"));
-				item.setUnits(jobj.getString("units"));
+				}
+				catch(JSONException e) {
+					item.setPrice(new BigDecimal(0));
+				}
+				try {
+					item.setQuantity(jobj.getInt("quantity"));
+				}
+				catch(JSONException e) {
+					item.setQuantity(0);
+				}
+				try {
+					item.setUnits(jobj.getString("units"));
+				}
+				catch(JSONException e) {
+					item.setUnits(null);
+				}
 				try {
 					item.setImage(jobj.getString("image"));
 				} catch(JSONException e) {					

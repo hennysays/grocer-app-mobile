@@ -91,10 +91,6 @@ public class ReportNewStoreAutoCompleteAdapter extends ArrayAdapter<PlacesApiAut
 	public static class ViewHolder {
 		TextView nameView;
 		TextView locationView;
-		String reference;
-		
-		public String getReference() {
-			return this.reference;
-		}
+		public String reference;
 	}
 }

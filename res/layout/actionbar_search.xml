@@ -1,22 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginLeft="0dp"
+    android:layout_marginRight="0dp"
     android:layout_gravity="fill_horizontal" 
+    android:id="@+id/custom_actionbar"
  >
  
     <com.hennysays.grocer.views.ClearableAutoCompleteTextView
+        android:dropDownAnchor="@id/custom_actionbar"
         android:id="@+id/search_autocompletetextview"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:dropDownVerticalOffset="5dp"
-        android:dropDownWidth="wrap_content"
+        android:dropDownWidth="fill_parent"
+        android:dropDownHeight="match_parent"
         android:hint="@string/search_item_hint"
+        android:popupBackground="#3ac47f"
+        android:dropDownVerticalOffset="2dp"
         android:singleLine="true"
         android:gravity="bottom"
         android:imeOptions="actionSearch" >
     </com.hennysays.grocer.views.ClearableAutoCompleteTextView>
+    
     <ImageView
         android:id="@+id/search_icon"
         android:layout_width="wrap_content"
@@ -28,3 +34,6 @@
         android:src="@drawable/ic_action_search" />
  
 </RelativeLayout>
+
+<!-- android:layout_alignParentRight="true" -->
+<!-- android:dropDownVerticalOffset="5dp" -->

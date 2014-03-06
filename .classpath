@@ -8,5 +8,8 @@
 	<classpathentry exported="true" kind="lib" path="/Users/hennysays/Documents/nhaarman-ListViewAnimations-97aba62/com.haarman.listviewanimations-2.5.2.jar"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/android-support-v7-appcompat"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/FacebookSDK"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/simple-crop-image-lib"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
