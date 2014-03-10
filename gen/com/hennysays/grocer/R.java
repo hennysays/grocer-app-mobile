@@ -233,6 +233,30 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
 "<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
          */
         public static final int backgroundStacked=0x7f01003e;
+        /** <p>Must be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int button1=0x7f01007d;
+        /** <p>Must be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int button2=0x7f01007e;
+        /** <p>Must be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int button3=0x7f01007f;
         /**  A style that may be applied to Buttons placed within a
          LinearLayout with the style buttonBarStyle to form a button bar. 
          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
@@ -284,6 +308,14 @@ containing a value of this type.
 </table>
          */
         public static final int displayOptions=0x7f010036;
+        /** <p>Must be an integer value, such as "<code>100</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int distance=0x7f010081;
         /**  Specifies the drawable used for item dividers. 
          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
 or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
@@ -442,6 +474,26 @@ theme attribute (in the form
 containing a value of this type.
          */
         public static final int itemPadding=0x7f010045;
+        /** <p>Must be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int label=0x7f01007c;
+        /** <p>Must be one of the following constant values.</p>
+<table>
+<colgroup align="left" />
+<colgroup align="left" />
+<colgroup align="left" />
+<tr><th>Constant</th><th>Value</th><th>Description</th></tr>
+<tr><td><code>left</code></td><td>0</td><td></td></tr>
+<tr><td><code>middle</code></td><td>1</td><td></td></tr>
+<tr><td><code>right</code></td><td>2</td><td></td></tr>
+</table>
+         */
+        public static final int labelPosition=0x7f010080;
         /**  Drawable used as a background for selected list items. 
          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
 or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
@@ -944,7 +996,7 @@ containing a value of this type.
         public static final int abc_split_action_bar_is_narrow=0x7f0a0002;
     }
     public static final class color {
-        public static final int abc_search_url_text_holo=0x7f09000a;
+        public static final int abc_search_url_text_holo=0x7f090010;
         public static final int abc_search_url_text_normal=0x7f090007;
         public static final int abc_search_url_text_pressed=0x7f090009;
         public static final int abc_search_url_text_selected=0x7f090008;
@@ -955,6 +1007,12 @@ containing a value of this type.
         public static final int com_facebook_usersettingsfragment_connected_shadow_color=0x7f090004;
         public static final int com_facebook_usersettingsfragment_connected_text_color=0x7f090003;
         public static final int com_facebook_usersettingsfragment_not_connected_text_color=0x7f090005;
+        public static final int green=0x7f09000a;
+        public static final int grey=0x7f09000d;
+        public static final int grey_green=0x7f09000e;
+        public static final int light_green=0x7f09000b;
+        public static final int light_red=0x7f09000c;
+        public static final int white=0x7f09000f;
     }
     public static final class dimen {
         /**  Default height of an action bar. 
@@ -1172,7 +1230,7 @@ containing a value of this type.
         public static final int com_facebook_list_section_header_background=0x7f020069;
         public static final int com_facebook_loginbutton_silver=0x7f02006a;
         public static final int com_facebook_logo=0x7f02006b;
-        public static final int com_facebook_picker_default_separator_color=0x7f020089;
+        public static final int com_facebook_picker_default_separator_color=0x7f02008b;
         public static final int com_facebook_picker_item_background=0x7f02006c;
         public static final int com_facebook_picker_list_focused=0x7f02006d;
         public static final int com_facebook_picker_list_longpressed=0x7f02006e;
@@ -1201,140 +1259,153 @@ containing a value of this type.
         public static final int ic_rotate_left=0x7f020085;
         public static final int ic_rotate_right=0x7f020086;
         public static final int indicator_autocrop=0x7f020087;
-        public static final int selector_crop_button=0x7f020088;
+        public static final int rounded_corners=0x7f020088;
+        public static final int rounded_corners_light=0x7f020089;
+        public static final int selector_crop_button=0x7f02008a;
     }
     public static final class id {
-        public static final int action_bar=0x7f07001e;
+        public static final int action_bar=0x7f070020;
         public static final int action_bar_activity_content=0x7f070017;
-        public static final int action_bar_container=0x7f07001d;
-        public static final int action_bar_overlay_layout=0x7f070021;
-        public static final int action_bar_root=0x7f07001c;
-        public static final int action_bar_subtitle=0x7f070025;
-        public static final int action_bar_title=0x7f070024;
-        public static final int action_context_bar=0x7f07001f;
-        public static final int action_logout=0x7f070084;
+        public static final int action_bar_container=0x7f07001f;
+        public static final int action_bar_overlay_layout=0x7f070023;
+        public static final int action_bar_root=0x7f07001e;
+        public static final int action_bar_subtitle=0x7f070027;
+        public static final int action_bar_title=0x7f070026;
+        public static final int action_context_bar=0x7f070021;
+        public static final int action_logout=0x7f07008f;
         public static final int action_menu_divider=0x7f070018;
         public static final int action_menu_presenter=0x7f070019;
-        public static final int action_mode_close_button=0x7f070026;
-        public static final int action_settings=0x7f070083;
-        public static final int activity_animateremoval_button=0x7f07005b;
-        public static final int activity_animateremoval_listview=0x7f07005c;
-        public static final int activity_chooser_view_content=0x7f070027;
-        public static final int add_icon=0x7f070078;
+        public static final int action_mode_close_button=0x7f070028;
+        public static final int action_settings=0x7f07008e;
+        public static final int activity_animateremoval_button=0x7f07005d;
+        public static final int activity_animateremoval_listview=0x7f07005e;
+        public static final int activity_chooser_view_content=0x7f070029;
+        public static final int add_icon=0x7f07007d;
         public static final int always=0x7f07000d;
         public static final int beginning=0x7f070013;
-        public static final int checkbox=0x7f07002f;
+        public static final int button1=0x7f070089;
+        public static final int button2=0x7f07008a;
+        public static final int button3=0x7f07008b;
+        public static final int checkbox=0x7f070031;
         public static final int collapseActionView=0x7f07000f;
-        public static final int com_facebook_login_activity_progress_bar=0x7f070044;
-        public static final int com_facebook_picker_activity_circle=0x7f070043;
-        public static final int com_facebook_picker_checkbox=0x7f070046;
-        public static final int com_facebook_picker_checkbox_stub=0x7f07004a;
-        public static final int com_facebook_picker_divider=0x7f07004e;
-        public static final int com_facebook_picker_done_button=0x7f07004d;
-        public static final int com_facebook_picker_image=0x7f070047;
-        public static final int com_facebook_picker_list_section_header=0x7f07004b;
-        public static final int com_facebook_picker_list_view=0x7f070042;
-        public static final int com_facebook_picker_profile_pic_stub=0x7f070048;
-        public static final int com_facebook_picker_row_activity_circle=0x7f070045;
-        public static final int com_facebook_picker_search_text=0x7f070053;
-        public static final int com_facebook_picker_title=0x7f070049;
-        public static final int com_facebook_picker_title_bar=0x7f070050;
-        public static final int com_facebook_picker_title_bar_stub=0x7f07004f;
-        public static final int com_facebook_picker_top_bar=0x7f07004c;
-        public static final int com_facebook_search_bar_view=0x7f070052;
-        public static final int com_facebook_usersettingsfragment_login_button=0x7f070056;
-        public static final int com_facebook_usersettingsfragment_logo_image=0x7f070054;
-        public static final int com_facebook_usersettingsfragment_profile_name=0x7f070055;
-        public static final int container=0x7f070041;
-        public static final int custom_actionbar=0x7f07003e;
-        public static final int default_activity_button=0x7f07002a;
+        public static final int com_facebook_login_activity_progress_bar=0x7f070046;
+        public static final int com_facebook_picker_activity_circle=0x7f070045;
+        public static final int com_facebook_picker_checkbox=0x7f070048;
+        public static final int com_facebook_picker_checkbox_stub=0x7f07004c;
+        public static final int com_facebook_picker_divider=0x7f070050;
+        public static final int com_facebook_picker_done_button=0x7f07004f;
+        public static final int com_facebook_picker_image=0x7f070049;
+        public static final int com_facebook_picker_list_section_header=0x7f07004d;
+        public static final int com_facebook_picker_list_view=0x7f070044;
+        public static final int com_facebook_picker_profile_pic_stub=0x7f07004a;
+        public static final int com_facebook_picker_row_activity_circle=0x7f070047;
+        public static final int com_facebook_picker_search_text=0x7f070055;
+        public static final int com_facebook_picker_title=0x7f07004b;
+        public static final int com_facebook_picker_title_bar=0x7f070052;
+        public static final int com_facebook_picker_title_bar_stub=0x7f070051;
+        public static final int com_facebook_picker_top_bar=0x7f07004e;
+        public static final int com_facebook_search_bar_view=0x7f070054;
+        public static final int com_facebook_usersettingsfragment_login_button=0x7f070058;
+        public static final int com_facebook_usersettingsfragment_logo_image=0x7f070056;
+        public static final int com_facebook_usersettingsfragment_profile_name=0x7f070057;
+        public static final int container=0x7f070043;
+        public static final int custom_actionbar=0x7f070040;
+        public static final int default_activity_button=0x7f07002c;
         public static final int dialog=0x7f070010;
         public static final int disableHome=0x7f07000a;
-        public static final int discard=0x7f070057;
+        public static final int discard=0x7f070059;
+        public static final int distance_slider=0x7f070088;
         public static final int dropdown=0x7f070011;
-        public static final int edit_query=0x7f070032;
+        public static final int edit_query=0x7f070034;
         public static final int end=0x7f070015;
-        public static final int expand_activities_button=0x7f070028;
-        public static final int expanded_menu=0x7f07002e;
-        public static final int fragment_search_results_empty_textview=0x7f070072;
-        public static final int fragment_search_results_listview=0x7f070070;
-        public static final int fragment_search_results_progressbar=0x7f070071;
+        public static final int expand_activities_button=0x7f07002a;
+        public static final int expanded_menu=0x7f070030;
+        public static final int fragment_search_nested_holder=0x7f070075;
+        public static final int fragment_search_results_empty_textview=0x7f070078;
+        public static final int fragment_search_results_listview=0x7f070076;
+        public static final int fragment_search_results_progressbar=0x7f070077;
         public static final int home=0x7f070016;
         public static final int homeAsUp=0x7f070007;
-        public static final int icon=0x7f07002c;
+        public static final int icon=0x7f07002e;
         public static final int ifRoom=0x7f07000c;
-        public static final int image=0x7f070029;
-        public static final int item_image=0x7f070077;
-        public static final int item_name=0x7f070073;
-        public static final int item_price=0x7f070074;
+        public static final int image=0x7f07002b;
+        public static final int item_name=0x7f070079;
+        public static final int item_price=0x7f07007a;
+        public static final int label=0x7f070086;
         public static final int large=0x7f070002;
+        public static final int left=0x7f07001c;
         public static final int listMode=0x7f070003;
-        public static final int list_item=0x7f07002b;
-        public static final int login_button=0x7f07007d;
+        public static final int list_item=0x7f07002d;
+        public static final int login_button=0x7f070082;
         public static final int middle=0x7f070014;
         public static final int never=0x7f07000b;
         public static final int none=0x7f070012;
         public static final int normal=0x7f070001;
-        public static final int picker_subtitle=0x7f070051;
-        public static final int place_icon=0x7f070079;
-        public static final int profile_name=0x7f07007c;
+        public static final int picker_subtitle=0x7f070053;
+        public static final int place_icon=0x7f07007e;
+        public static final int profile_name=0x7f070081;
         public static final int progress_circular=0x7f07001a;
         public static final int progress_horizontal=0x7f07001b;
-        public static final int radio=0x7f070031;
-        public static final int report_add_store_button_textView=0x7f070060;
-        public static final int report_autocomplete_store_location_textView=0x7f070080;
-        public static final int report_autocomplete_store_name_textView=0x7f07007f;
-        public static final int report_image_spinner=0x7f07005f;
-        public static final int report_image_view=0x7f07005e;
-        public static final int report_name_editText=0x7f07005d;
-        public static final int report_new_store_city_editText=0x7f070065;
-        public static final int report_new_store_country_editText=0x7f070067;
-        public static final int report_new_store_info_linearLayout=0x7f070063;
-        public static final int report_new_store_province_editText=0x7f070066;
-        public static final int report_new_store_street_editText=0x7f070064;
-        public static final int report_price_editText=0x7f07006b;
-        public static final int report_price_label_textView=0x7f070068;
-        public static final int report_progressBar=0x7f07006f;
-        public static final int report_quantity_editText=0x7f07006c;
-        public static final int report_quantity_label_textView=0x7f070069;
-        public static final int report_store_autoCompleteTextView=0x7f070062;
-        public static final int report_store_linearLayout=0x7f070061;
-        public static final int report_submit_button=0x7f07006e;
-        public static final int report_units_label_textView=0x7f07006a;
-        public static final int report_units_spinner=0x7f07006d;
-        public static final int rotateLeft=0x7f070058;
-        public static final int rotateRight=0x7f070059;
-        public static final int save=0x7f07005a;
-        public static final int search_autocompletetextview=0x7f07003f;
-        public static final int search_badge=0x7f070034;
-        public static final int search_bar=0x7f070033;
-        public static final int search_button=0x7f070035;
-        public static final int search_close_btn=0x7f07003a;
-        public static final int search_edit_frame=0x7f070036;
-        public static final int search_go_btn=0x7f07003c;
-        public static final int search_icon=0x7f070040;
-        public static final int search_mag_icon=0x7f070037;
-        public static final int search_plate=0x7f070038;
-        public static final int search_src_text=0x7f070039;
-        public static final int search_voice_btn=0x7f07003d;
-        public static final int share_icon=0x7f07007a;
-        public static final int shortcut=0x7f070030;
+        public static final int radio=0x7f070033;
+        public static final int report_add_store_button_textView=0x7f070062;
+        public static final int report_autocomplete_store_location_textView=0x7f070085;
+        public static final int report_autocomplete_store_name_textView=0x7f070084;
+        public static final int report_image_spinner=0x7f070061;
+        public static final int report_image_view=0x7f070060;
+        public static final int report_name_editText=0x7f07005f;
+        public static final int report_new_store_city_editText=0x7f070067;
+        public static final int report_new_store_country_editText=0x7f070069;
+        public static final int report_new_store_info_linearLayout=0x7f070065;
+        public static final int report_new_store_province_editText=0x7f070068;
+        public static final int report_new_store_street_editText=0x7f070066;
+        public static final int report_price_editText=0x7f07006d;
+        public static final int report_price_label_textView=0x7f07006a;
+        public static final int report_progressBar=0x7f070071;
+        public static final int report_quantity_editText=0x7f07006e;
+        public static final int report_quantity_label_textView=0x7f07006b;
+        public static final int report_store_autoCompleteTextView=0x7f070064;
+        public static final int report_store_linearLayout=0x7f070063;
+        public static final int report_submit_button=0x7f070070;
+        public static final int report_units_label_textView=0x7f07006c;
+        public static final int report_units_spinner=0x7f07006f;
+        public static final int result=0x7f070087;
+        public static final int right=0x7f07001d;
+        public static final int rotateLeft=0x7f07005a;
+        public static final int rotateRight=0x7f07005b;
+        public static final int save=0x7f07005c;
+        public static final int search_autocompletetextview=0x7f070041;
+        public static final int search_autocompletetextview_results=0x7f070074;
+        public static final int search_autocompletetextview_results_searchfor=0x7f070073;
+        public static final int search_badge=0x7f070036;
+        public static final int search_bar=0x7f070035;
+        public static final int search_button=0x7f070037;
+        public static final int search_close_btn=0x7f07003c;
+        public static final int search_edit_frame=0x7f070038;
+        public static final int search_go_btn=0x7f07003e;
+        public static final int search_icon=0x7f070042;
+        public static final int search_mag_icon=0x7f070039;
+        public static final int search_options=0x7f070072;
+        public static final int search_plate=0x7f07003a;
+        public static final int search_src_text=0x7f07003b;
+        public static final int search_voice_btn=0x7f07003f;
+        public static final int share_icon=0x7f07007f;
+        public static final int shortcut=0x7f070032;
         public static final int showCustom=0x7f070009;
         public static final int showHome=0x7f070006;
         public static final int showTitle=0x7f070008;
-        public static final int skip_login_button=0x7f07007e;
+        public static final int skip_login_button=0x7f070083;
         public static final int small=0x7f070000;
-        public static final int splash_icon=0x7f07007b;
-        public static final int split_action_bar=0x7f070020;
-        public static final int store_distance=0x7f070076;
-        public static final int store_name=0x7f070075;
-        public static final int submit_area=0x7f07003b;
+        public static final int splash_icon=0x7f070080;
+        public static final int split_action_bar=0x7f070022;
+        public static final int store_distance=0x7f07007c;
+        public static final int store_name=0x7f07007b;
+        public static final int submit_area=0x7f07003d;
         public static final int tabMode=0x7f070004;
-        public static final int title=0x7f07002d;
-        public static final int top_action_bar=0x7f070022;
-        public static final int undo_row_texttv=0x7f070081;
-        public static final int undo_row_undobutton=0x7f070082;
-        public static final int up=0x7f070023;
+        public static final int title=0x7f07002f;
+        public static final int top_action_bar=0x7f070024;
+        public static final int undo_row_texttv=0x7f07008c;
+        public static final int undo_row_undobutton=0x7f07008d;
+        public static final int up=0x7f070025;
         public static final int useLogo=0x7f070005;
         public static final int withText=0x7f07000e;
     }
@@ -1409,15 +1480,18 @@ containing a value of this type.
         public static final int fragment_grocery_list_dismissrow=0x7f03002a;
         public static final int fragment_report=0x7f03002b;
         public static final int fragment_search=0x7f03002c;
-        public static final int fragment_search_results=0x7f03002d;
-        public static final int fragment_search_results_card=0x7f03002e;
-        public static final int fragment_splash=0x7f03002f;
-        public static final int list_item=0x7f030030;
-        public static final int list_item_search=0x7f030031;
-        public static final int list_row=0x7f030032;
-        public static final int main=0x7f030033;
-        public static final int support_simple_spinner_dropdown_item=0x7f030034;
-        public static final int undo_row=0x7f030035;
+        public static final int fragment_search_nested_holder=0x7f03002d;
+        public static final int fragment_search_results=0x7f03002e;
+        public static final int fragment_search_results_card=0x7f03002f;
+        public static final int fragment_splash=0x7f030030;
+        public static final int list_item=0x7f030031;
+        public static final int list_item_search=0x7f030032;
+        public static final int list_row=0x7f030033;
+        public static final int main=0x7f030034;
+        public static final int search_limitdistanceslider=0x7f030035;
+        public static final int search_tristatetogglebutton=0x7f030036;
+        public static final int support_simple_spinner_dropdown_item=0x7f030037;
+        public static final int undo_row=0x7f030038;
     }
     public static final class menu {
         public static final int main_activity_actions=0x7f0d0000;
@@ -1554,15 +1628,14 @@ containing a value of this type.
             backward-compatibility can go here.
         
          */
-        public static final int AppBaseTheme=0x7f060087;
+        public static final int AppBaseTheme=0x7f060088;
         /**  Application theme. 
  All customizations that are NOT specific to a particular API-level can go here. 
          */
-        public static final int AppTheme=0x7f060088;
+        public static final int AppTheme=0x7f060089;
         public static final int CropButton=0x7f060000;
-        /**  All customizations that are NOT specific to a particular API-level can go here. 
-         */
         public static final int Grocer_Style_DropDownAutoCompleteTextView=0x7f060086;
+        public static final int Grocer_Style_TriStateTextView=0x7f060087;
         /**  Mimic text appearance in select_dialog_item.xml 
          */
         public static final int TextAppearance_AppCompat_Base_CompactMenu_Dialog=0x7f060066;
@@ -2362,6 +2435,33 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
           @attr name com.hennysays.grocer:textAllCaps
         */
         public static final int CompatTextView_textAllCaps = 0;
+        /** Attributes that can be used with a LimitDistanceSliderView.
+           <p>Includes the following attributes:</p>
+           <table>
+           <colgroup align="left" />
+           <colgroup align="left" />
+           <tr><th>Attribute</th><th>Description</th></tr>
+           <tr><td><code>{@link #LimitDistanceSliderView_distance com.hennysays.grocer:distance}</code></td><td></td></tr>
+           </table>
+           @see #LimitDistanceSliderView_distance
+         */
+        public static final int[] LimitDistanceSliderView = {
+            0x7f010081
+        };
+        /**
+          <p>This symbol is the offset where the {@link com.hennysays.grocer.R.attr#distance}
+          attribute's value can be found in the {@link #LimitDistanceSliderView} array.
+
+
+          <p>Must be an integer value, such as "<code>100</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name com.hennysays.grocer:distance
+        */
+        public static final int LimitDistanceSliderView_distance = 0;
         /** Attributes that can be used with a LinearLayoutICS.
            <p>Includes the following attributes:</p>
            <table>
@@ -3214,6 +3314,102 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
           @attr name com.hennysays.grocer:popupMenuStyle
         */
         public static final int Theme_popupMenuStyle = 2;
+        /** Attributes that can be used with a TriStateToggleButtonView.
+           <p>Includes the following attributes:</p>
+           <table>
+           <colgroup align="left" />
+           <colgroup align="left" />
+           <tr><th>Attribute</th><th>Description</th></tr>
+           <tr><td><code>{@link #TriStateToggleButtonView_button1 com.hennysays.grocer:button1}</code></td><td></td></tr>
+           <tr><td><code>{@link #TriStateToggleButtonView_button2 com.hennysays.grocer:button2}</code></td><td></td></tr>
+           <tr><td><code>{@link #TriStateToggleButtonView_button3 com.hennysays.grocer:button3}</code></td><td></td></tr>
+           <tr><td><code>{@link #TriStateToggleButtonView_label com.hennysays.grocer:label}</code></td><td></td></tr>
+           <tr><td><code>{@link #TriStateToggleButtonView_labelPosition com.hennysays.grocer:labelPosition}</code></td><td></td></tr>
+           </table>
+           @see #TriStateToggleButtonView_button1
+           @see #TriStateToggleButtonView_button2
+           @see #TriStateToggleButtonView_button3
+           @see #TriStateToggleButtonView_label
+           @see #TriStateToggleButtonView_labelPosition
+         */
+        public static final int[] TriStateToggleButtonView = {
+            0x7f01007c, 0x7f01007d, 0x7f01007e, 0x7f01007f,
+            0x7f010080
+        };
+        /**
+          <p>This symbol is the offset where the {@link com.hennysays.grocer.R.attr#button1}
+          attribute's value can be found in the {@link #TriStateToggleButtonView} array.
+
+
+          <p>Must be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name com.hennysays.grocer:button1
+        */
+        public static final int TriStateToggleButtonView_button1 = 1;
+        /**
+          <p>This symbol is the offset where the {@link com.hennysays.grocer.R.attr#button2}
+          attribute's value can be found in the {@link #TriStateToggleButtonView} array.
+
+
+          <p>Must be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name com.hennysays.grocer:button2
+        */
+        public static final int TriStateToggleButtonView_button2 = 2;
+        /**
+          <p>This symbol is the offset where the {@link com.hennysays.grocer.R.attr#button3}
+          attribute's value can be found in the {@link #TriStateToggleButtonView} array.
+
+
+          <p>Must be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name com.hennysays.grocer:button3
+        */
+        public static final int TriStateToggleButtonView_button3 = 3;
+        /**
+          <p>This symbol is the offset where the {@link com.hennysays.grocer.R.attr#label}
+          attribute's value can be found in the {@link #TriStateToggleButtonView} array.
+
+
+          <p>Must be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name com.hennysays.grocer:label
+        */
+        public static final int TriStateToggleButtonView_label = 0;
+        /**
+          <p>This symbol is the offset where the {@link com.hennysays.grocer.R.attr#labelPosition}
+          attribute's value can be found in the {@link #TriStateToggleButtonView} array.
+
+
+          <p>Must be one of the following constant values.</p>
+<table>
+<colgroup align="left" />
+<colgroup align="left" />
+<colgroup align="left" />
+<tr><th>Constant</th><th>Value</th><th>Description</th></tr>
+<tr><td><code>left</code></td><td>0</td><td></td></tr>
+<tr><td><code>middle</code></td><td>1</td><td></td></tr>
+<tr><td><code>right</code></td><td>2</td><td></td></tr>
+</table>
+          @attr name com.hennysays.grocer:labelPosition
+        */
+        public static final int TriStateToggleButtonView_labelPosition = 4;
         /** Attributes that can be used with a View.
            <p>Includes the following attributes:</p>
            <table>

@@ -25,6 +25,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -32,11 +33,14 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
 import android.view.View.OnKeyListener;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,6 +56,7 @@ import com.facebook.UiLifecycleHelper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hennysays.grocer.R;
+import com.hennysays.grocer.adapters.GroceryListAdapter;
 import com.hennysays.grocer.adapters.SearchItemAutoCompleteAdapter;
 import com.hennysays.grocer.controller.Controller;
 import com.hennysays.grocer.models.GroceryItem;
@@ -69,16 +74,27 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 	 * android.support.v4.app.FragmentStatePagerAdapter}.
 	 */
 	private Context mContext;
-	private SectionsPagerAdapter mSectionsPagerAdapter;
+	public SectionsPagerAdapter mSectionsPagerAdapter;
 	/* The {@link ViewPager} that will host the section contents. */
 	private ViewPager mViewPager;
-	private final int NUM_TABS = 3;
+	private final int NUM_TABS = 2;
 	private GrocerLocation mLocation;
 	private ActionBar mActionBar;
 
+	public ArrayList<String> mList = new ArrayList<String>();
+	
 	public static final String PREFS_NAME = "MyPrefsFile";
 	public static final String GROCERY_LIST = "GroceryList";
+	
 	private ArrayList<GroceryItem> mGroceryList;
+	private GroceryListAdapter mGroceryListAdapter;
+	private ClearableAutoCompleteTextView mClearableAutoCompleteSearchBarTextView;
+	private SearchItemAutoCompleteAdapter mSearchItemAutoCompleteAdapter;
+	private ListView mSearchResultsListView;
+	private TextView mSearchTextView;
+	private LinearLayout mSearchOptions;
+	
+	
 	private SharedPreferences prefs;
 	
 	public boolean addToGroceryList(GroceryItem item) {
@@ -87,6 +103,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 		}
 		else {
 			mGroceryList.add(item);
+			mGroceryListAdapter.add(item);
 			prefs = getSharedPreferences(PREFS_NAME,Context.MODE_PRIVATE);
 			Editor editor = prefs.edit();
 			editor.putString(GROCERY_LIST,new Gson().toJson(mGroceryList));
@@ -97,18 +114,21 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 	
 	public void removeFromGroceryList(int indx) {
 		mGroceryList.remove(indx);
+		mGroceryListAdapter.remove(indx);
 		prefs = getSharedPreferences(PREFS_NAME,Context.MODE_PRIVATE);
 		Editor editor = prefs.edit();
 		editor.putString(GROCERY_LIST,new Gson().toJson(mGroceryList));
 		editor.commit();
 	}
 	
-	
-	
 	public ArrayList<GroceryItem> getGroceryList() {
 		return mGroceryList;
 	}
 	
+	public GroceryListAdapter getGroceryListAdapter() {
+		return mGroceryListAdapter;
+	}
+		
 	//FACEBOOK INTEGRATION
 	public boolean isFbLoggedIn = false;
 	private UiLifecycleHelper uiHelper;
@@ -127,9 +147,6 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 	@SuppressLint("InlinedApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-//		if (Build.VERSION.SDK_INT >= 19) {
-//			getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-//		}
 		super.onCreate(savedInstanceState);
 		prefs = getSharedPreferences(PREFS_NAME,Context.MODE_PRIVATE);
 		String glist = prefs.getString(GROCERY_LIST,"");
@@ -142,7 +159,6 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 			 mGroceryList = gson.fromJson(glist,listType);			 
 		 }
 		
-		
 		mContext = this;
 		// Set up the action bar.
 		mActionBar = getSupportActionBar();
@@ -150,7 +166,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 //		mActionBar.setDisplayHomeAsUpEnabled(false);
 		mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 		
-		
+		mGroceryListAdapter = new GroceryListAdapter(this, new ArrayList<Integer>());
 
 		//  FACEBOOK INTEGRATION
 		if (savedInstanceState != null) {
@@ -191,6 +207,14 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 	}
 
 	@Override
+	public boolean onPrepareOptionsMenu (Menu menu) {
+		menu.getItem(0).setEnabled(false);
+	    if (!isFbLoggedIn)
+	        menu.getItem(1).setTitle("Log In");
+	    return true;
+	}
+	
+	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 	    // Inflate the menu items for use in the action bar
 	    MenuInflater inflater = getMenuInflater();
@@ -202,16 +226,19 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch(item.getItemId()) {
 		case R.id.action_logout:
-			if (Session.getActiveSession() != null) {
-			    Session.getActiveSession().closeAndClearTokenInformation();
+			if(isFbLoggedIn) {
+				if (Session.getActiveSession() != null) {
+					Session.getActiveSession().closeAndClearTokenInformation();
+				}
+				Session.setActiveSession(null);
 			}
-
-			Session.setActiveSession(null);
-            Intent intent = new Intent(this, SplashScreenActivity.class);
-            this.startActivity(intent);
-            this.finish();
+			Intent intent = new Intent(this, SplashScreenActivity.class);
+			this.startActivity(intent);
+			this.finish();
 			return true;
 		
+		case R.id.action_settings:
+			Toast.makeText(this, "TODO: Not Implemented yet", Toast.LENGTH_SHORT).show();
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -273,37 +300,18 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 			FragmentTransaction fragmentTransaction) {
 	}
 	
-	public interface SearchPageFragmentListener {
-	    void onSwitchToNextFragment();
-	}
-
+	
+	
 	/**
 	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
 	 * one of the sections/tabs/pages.
 	 */
 	public class SectionsPagerAdapter extends FragmentPagerAdapter {
-		
 		private Fragment mFragmentAtPos0;
-		private FragmentManager mFragmentManager;
-		private SearchPageListener listener = new SearchPageListener();
 		
 		public SectionsPagerAdapter(FragmentManager fm) {
 			super(fm);
-			mFragmentManager = fm;
-		}
-		
-	    public final class SearchPageListener implements SearchPageFragmentListener {
-	    	public void onSwitchToNextFragment() {
-	    		mFragmentManager.beginTransaction().remove(mFragmentAtPos0).commit();
-	    		if (mFragmentAtPos0 instanceof SearchFragment){
-	    			mFragmentAtPos0 = SearchResultsFragment.newInstance(listener);
-	    		}
-	    		else { // Instance of SearchResultsFragment
-	    				mFragmentAtPos0 = SearchFragment.newInstance(listener);
-	    		}
-	    		notifyDataSetChanged();
-	    	}
-	    }	
+		}		
 		
 		@Override
 		public Fragment getItem(int position) {
@@ -311,27 +319,18 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 			case 0:
 				if(mFragmentAtPos0==null) {
 					new SearchHttpAsyncTask().execute();
-					mFragmentAtPos0 = SearchFragment.newInstance(listener);
+					mFragmentAtPos0 = new SearchHolderFragment();
 				}
 				return mFragmentAtPos0;
 				
+//			case 1:
+//				return new ReportFragment();
+//				
 			case 1:
-				return new ReportFragment();
-				
-			case 2:
 				return new GroceryListFragment();
 			default:
 				return null;
 			}
-		}
-
-		@Override
-		public int getItemPosition(Object object) {
-			if (object instanceof SearchFragment && mFragmentAtPos0 instanceof SearchResultsFragment)
-				return POSITION_NONE;
-			if (object instanceof SearchResultsFragment && mFragmentAtPos0 instanceof SearchFragment)
-				return POSITION_NONE;
-			return POSITION_UNCHANGED;
 		}
 		
 		@Override
@@ -345,9 +344,9 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 			switch (position) {
 			case 0:
 				return getString(R.string.search_menu).toUpperCase(l);
+//			case 1:
+//				return getString(R.string.report_menu).toUpperCase(l);
 			case 1:
-				return getString(R.string.report_menu).toUpperCase(l);
-			case 2:
 				return getString(R.string.grocery_list_menu).toUpperCase(l);
 			default:
 				return null;
@@ -359,25 +358,6 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 	public void onSaveInstanceState(Bundle outState) {
 		outState.putBoolean(PENDING_PUBLISH_KEY, pendingPublishReauthorization);
 		uiHelper.onSaveInstanceState(outState);
-	}
-
-	@Override
-	public void onBackPressed() {
-		ClearableAutoCompleteTextView searchBox = (ClearableAutoCompleteTextView) this.findViewById(R.id.search_autocompletetextview);
-		if (searchBox != null && searchBox.getVisibility() == View.VISIBLE) {
-			toggleSearch(true);
-			return;
-		}
-		
-		
-//		Fragment page = getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + mViewPager.getCurrentItem());
-		
-		if(mViewPager.getCurrentItem()==0 && mSectionsPagerAdapter.getItem(0) instanceof SearchResultsFragment) {
-			SearchResultsFragment.listener.onSwitchToNextFragment();
-			return;
-		}
-		
-		super.onBackPressed();
 	}
 
 	@Override
@@ -407,7 +387,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 //			postParams.putString("link", "https://www.google.com");
 			postParams.putString("link", "https://www.facebook.com/grocerappmtl");
 			//		postParams.putString("picture", "http://grocer-app.herokuapp.com/images/logo.png");
-			// #32a96e, #3ac47f color codes
+
 
 			Request.Callback callback = new Request.Callback() {
 				public void onCompleted(Response response) {
@@ -469,133 +449,235 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 		}
 	}
 
-	protected void toggleSearch(boolean reset) {
-		ClearableAutoCompleteTextView clearableAutoCompleteSearchBarTextView = (ClearableAutoCompleteTextView) findViewById(R.id.search_autocompletetextview);
-		ImageView searchIcon = (ImageView) findViewById(R.id.search_icon);
-		if (reset) {
-			InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-			imm.hideSoftInputFromWindow(clearableAutoCompleteSearchBarTextView.getWindowToken(), 0);
-			// hide search box and show search icon
-			clearableAutoCompleteSearchBarTextView.setText("");
-			clearableAutoCompleteSearchBarTextView.setVisibility(View.GONE);
-			searchIcon.setVisibility(View.VISIBLE);
-		} else {
-			// hide search icon and show search box
-			searchIcon.setVisibility(View.GONE);
-			clearableAutoCompleteSearchBarTextView.setVisibility(View.VISIBLE);
-			clearableAutoCompleteSearchBarTextView.requestFocus();
-			// show the keyboard
-			InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-			imm.showSoftInput(clearableAutoCompleteSearchBarTextView, InputMethodManager.SHOW_IMPLICIT);
-		}
-	}
 	
+	@Override
+	public void onBackPressed() {
+		// If searchbox is open, onBackPress should handle this first
+		if (mClearableAutoCompleteSearchBarTextView != null && mClearableAutoCompleteSearchBarTextView.getVisibility() == View.VISIBLE) {
+			toggleSearch(true);
+			return;
+		}
+		
+		// If searchbox is closed, pop back nested fragment stack
+		if(mViewPager.getCurrentItem()==0) {
+			Fragment fragment = mSectionsPagerAdapter.getItem(0);
+			if(fragment.getChildFragmentManager().getBackStackEntryCount() > 0) {
+				fragment.getChildFragmentManager().popBackStack();
+				return;
+			}
+		}
+		
+		super.onBackPressed();
+	}
+
 	private class SearchHttpAsyncTask extends AsyncTask<Void, Void, Integer> {
-		ArrayList<String> list = new ArrayList<String>();
 		View view;
-		ClearableAutoCompleteTextView clearableAutoCompleteSearchBarTextView;
 		@Override
 		protected void onPreExecute() {
 			LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			view = inflater.inflate(R.layout.actionbar_search, null);
-			clearableAutoCompleteSearchBarTextView = (ClearableAutoCompleteTextView) view.findViewById(R.id.search_autocompletetextview);
-			clearableAutoCompleteSearchBarTextView.setVisibility(View.INVISIBLE);
-			ActionBar actionBar = getSupportActionBar();
-		 	actionBar.setCustomView(view);
+			mClearableAutoCompleteSearchBarTextView = (ClearableAutoCompleteTextView) view.findViewById(R.id.search_autocompletetextview);
+			mClearableAutoCompleteSearchBarTextView.setVisibility(View.INVISIBLE);
 		}
 		
 		@Override
 		protected Integer doInBackground(Void... param) {
-			return Controller.searchItemAutoComplete("", list);
+			return Controller.searchItemAutoComplete("", mList);
 		}
 
 		@Override
 		protected void onPostExecute(Integer result) {			
-				SearchItemAutoCompleteAdapter searchItemAutoCompleteAdapter = new SearchItemAutoCompleteAdapter(mContext, R.layout.list_item_search, list);
-				searchItemAutoCompleteAdapter.setDropDownViewResource(R.layout.list_item_search); // SetDropDownViewResource not necessary for AutoCompleteTextView
-//				searchItemAutoCompleteAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			mActionBar.setCustomView(view);
+			setListViewAdapter(mList);
+			ImageView searchIcon = (ImageView) view.findViewById(R.id.search_icon);
+			searchIcon.setOnClickListener(new View.OnClickListener() {	
+				@Override
+				public void onClick(View v) {
+					toggleSearch(false);
+				}
+			});
+			
+		}
+	}
+	
+	TextWatcher mTextWatcher = new TextWatcher() {
+		@Override
+		public void onTextChanged(CharSequence s, int start, int before, int count) {
+			if(s.length()>1) {
+				mSearchTextView.setVisibility(View.VISIBLE);
+				mSearchTextView.setText("Search for \"" + s + "\"");
+			}
+			else {				
+				mSearchTextView.setVisibility(View.GONE);
 
-				ImageView home = (ImageView) findViewById(android.R.id.home); 
-				ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) home.getLayoutParams();
-				int horizontalOffset = home.getWidth()+lp.rightMargin + clearableAutoCompleteSearchBarTextView.getPaddingLeft();
-				clearableAutoCompleteSearchBarTextView.setDropDownHorizontalOffset(-horizontalOffset);
-				clearableAutoCompleteSearchBarTextView.setAdapter(searchItemAutoCompleteAdapter);
-				clearableAutoCompleteSearchBarTextView.setOnClearListener(new OnClearListener() {	
-					@Override
-					public void onClear() {
-						toggleSearch(true);
-					}
-				});	
-				clearableAutoCompleteSearchBarTextView.setOnKeyListener(new OnKeyListener()
+			}
+			mSearchItemAutoCompleteAdapter.getFilter().filter(s);
+		}
+
+		@Override
+		public void beforeTextChanged(CharSequence s, int start, int count,
+				int after) {
+		}
+
+		@Override
+		public void afterTextChanged(Editable s) {
+
+		}
+	};
+	
+	public void setListViewAdapter(ArrayList<String> list) {
+		mSearchItemAutoCompleteAdapter = new SearchItemAutoCompleteAdapter(mContext, R.layout.list_item_search, mList);
+		mSearchOptions = (LinearLayout) findViewById(R.id.search_options);
+		mSearchTextView = (TextView) findViewById(R.id.search_autocompletetextview_results_searchfor);
+		mSearchTextView.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(mClearableAutoCompleteSearchBarTextView.getWindowToken(), 0);
+				String query = mClearableAutoCompleteSearchBarTextView.getText().toString();
+				executeNextStage(query);
+			}
+		});
+		mSearchResultsListView = (ListView) findViewById(R.id.search_autocompletetextview_results);
+		mSearchResultsListView.setAdapter(mSearchItemAutoCompleteAdapter);
+		mSearchResultsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				String query = ((TextView) view).getText().toString();
+				InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(mClearableAutoCompleteSearchBarTextView.getWindowToken(), 0);
+//				clearableAutoCompleteSearchBarTextView.setText(query);
+				executeNextStage(query);
+			}
+		});
+
+		mClearableAutoCompleteSearchBarTextView.addTextChangedListener(mTextWatcher);
+		mClearableAutoCompleteSearchBarTextView.setOnClearListener(new OnClearListener() {	
+			@Override
+			public void onClear() {
+				InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(mClearableAutoCompleteSearchBarTextView.getWindowToken(), 0);
+				toggleSearch(true);
+			}
+		});	
+		mClearableAutoCompleteSearchBarTextView.setOnKeyListener(new OnKeyListener()
+		{
+			
+			public boolean onKey(View v, int keyCode, KeyEvent event)
+			{
+				if (event.getAction() == KeyEvent.ACTION_DOWN)
 				{
-					public boolean onKey(View v, int keyCode, KeyEvent event)
+					switch (keyCode)
 					{
-						if (event.getAction() == KeyEvent.ACTION_DOWN)
-						{
-							switch (keyCode)
-							{
-							case KeyEvent.KEYCODE_ENTER:
-								clearableAutoCompleteSearchBarTextView.dismissDropDown();
-								Editable query = clearableAutoCompleteSearchBarTextView.getText();
-								String queryString = query.toString();
-								if(queryString.equals("")) {
-								}
-								else {
-//									SearchResultsFragment searchResultsFragment = new SearchResultsFragment();
-//									Bundle args = new Bundle();
-//									args.putString("query", queryString);
-//									searchResultsFragment.setArguments(args);
-									
-//									FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-//									ft.replace(R.id.container,searchResultsFragment);
-//									ft.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_out_up);
-//									ft.addToBackStack(null);
-//									ft.commit();
-									InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-									imm.hideSoftInputFromWindow(clearableAutoCompleteSearchBarTextView.getWindowToken(), 0);
-									
-									Fragment fragment = mSectionsPagerAdapter.getItem(0);
-									if(fragment instanceof SearchFragment) {
-										SearchFragment.listener.onSwitchToNextFragment();
-									}
-									else {
-										((SearchResultsFragment) fragment).runHttpAsyncTask(queryString);
-									}
-									
-
-								}
-								return true;
-							default:
-								break;
-							}
-						}
-						return false;
-					}
-				});
-				clearableAutoCompleteSearchBarTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-					@Override
-					public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-						String queryString = ((TextView) view).getText().toString();
-
-						InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-						imm.hideSoftInputFromWindow(clearableAutoCompleteSearchBarTextView.getWindowToken(), 0);
-						
-						Fragment fragment = mSectionsPagerAdapter.getItem(0);
-						if(fragment instanceof SearchFragment) {
-							SearchFragment.listener.onSwitchToNextFragment();
+					case KeyEvent.KEYCODE_ENTER:
+						Editable query = mClearableAutoCompleteSearchBarTextView.getText();
+						String queryString = query.toString();
+						if(queryString.equals("")) {
+							break;
 						}
 						else {
-							((SearchResultsFragment) fragment).runHttpAsyncTask(queryString);
+							InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+							imm.hideSoftInputFromWindow(mClearableAutoCompleteSearchBarTextView.getWindowToken(), 0);
+							executeNextStage(queryString);
 						}
+						return true;
+					default:
+						break;
 					}
-				});
-				ImageView searchIcon = (ImageView) view.findViewById(R.id.search_icon);
-				searchIcon.setOnClickListener(new View.OnClickListener() {	
-					@Override
-					public void onClick(View v) {
-						toggleSearch(false);
+				}
+				return false;
+			}
+		});
+		mClearableAutoCompleteSearchBarTextView.setOnFocusChangeListener(new OnFocusChangeListener() {
+			Fragment fragment = mSectionsPagerAdapter.getItem(0);
+			FragmentManager fm = fragment.getChildFragmentManager();
+			
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				Fragment resultsFragment = fm.findFragmentByTag(SearchResultsFragment.TAG);
+				Fragment searchFragment = fm.findFragmentByTag(SearchFragment.TAG);
+				
+				if(hasFocus) {
+					mSearchOptions.setVisibility(View.GONE);
+					if(resultsFragment !=null) {
+					fm.beginTransaction().hide(resultsFragment).show(searchFragment).addToBackStack(null).commit();
 					}
-				});
+				}
+				else {
+					mSearchOptions.setVisibility(View.VISIBLE);
+				}
+				
+				
+			}
+		});
+		
+		
+	}
+
+	public void executeNextStage(String query) {		
+		Fragment fragment = mSectionsPagerAdapter.getItem(0);
+		switch(mViewPager.getCurrentItem()) {
+		case 0:
+			FragmentManager fm = fragment.getChildFragmentManager();
+			FragmentTransaction ft = fm.beginTransaction();
+			
+			SearchResultsFragment frag = (SearchResultsFragment) fm.findFragmentByTag(SearchResultsFragment.TAG);
+			SearchFragment frag2 = (SearchFragment) fm.findFragmentByTag(SearchFragment.TAG);
+			
+			 // if no previous results fragment found, create a new one
+			toggleSearch(true);
+			mClearableAutoCompleteSearchBarTextView.removeTextChangedListener(mTextWatcher);
+			mClearableAutoCompleteSearchBarTextView.setText(query);
+			mClearableAutoCompleteSearchBarTextView.addTextChangedListener(mTextWatcher);
+			if(frag==null) {
+				frag = new SearchResultsFragment();
+	            Bundle args = new Bundle();
+	            args.putString(SearchResultsFragment.QUERY, query);
+	            frag.setArguments(args);
+				ft.hide(frag2).add(R.id.fragment_search_nested_holder,frag,SearchResultsFragment.TAG).addToBackStack(null).commit();
+			}
+			else {
+				fm.popBackStack();
+				ft.hide(frag2).show(frag).commit();
+				frag.runHttpAsyncTask(query);
+			}
+
+			break;
+		}
+	}
+	
+	protected void toggleSearch(boolean reset) {
+		ImageView searchIcon = (ImageView) findViewById(R.id.search_icon);
+		if (reset) {
+			if(!mClearableAutoCompleteSearchBarTextView.getText().toString().equals("")) { // If there still is text in the searchbox, just delete the text
+				mClearableAutoCompleteSearchBarTextView.setText("");
+				mClearableAutoCompleteSearchBarTextView.clearFocus();
+				
+			}
+			else {
+				// hide search box and show search icon
+				mClearableAutoCompleteSearchBarTextView.setVisibility(View.GONE);
+				searchIcon.setVisibility(View.VISIBLE);
+				
+				
+				// Case when a Results fragment has already been loaded, resetting from empty search box should not only close the searchbox, but also go back one level
+				Fragment fragment = mSectionsPagerAdapter.getItem(0);
+				FragmentManager fm = fragment.getChildFragmentManager();
+				Fragment frag = fm.findFragmentByTag(SearchResultsFragment.TAG);
+				if(frag!=null) {
+					onBackPressed();
+				}
+				
+				
+			}
+		} else {
+			// hide search icon and show search box
+			searchIcon.setVisibility(View.GONE);
+			mClearableAutoCompleteSearchBarTextView.setVisibility(View.VISIBLE);
+			mClearableAutoCompleteSearchBarTextView.requestFocus();
+			// show the keyboard
+			InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+			imm.showSoftInput(mClearableAutoCompleteSearchBarTextView, InputMethodManager.SHOW_IMPLICIT);
 		}
 	}
 }

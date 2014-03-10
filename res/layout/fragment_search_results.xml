@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- android:background="#e2e2e2" -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     android:orientation="vertical"
     android:paddingLeft="8dp"
-    android:paddingRight="8dp" >
+    android:paddingRight="8dp"
+    android:background="@color/white" >
 
     <ListView
         android:id="@+id/fragment_search_results_listview"
@@ -13,10 +14,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/paddingTop"
         android:clipToPadding="false"
-        android:divider="@null"
-        android:dividerHeight="16dp"
+        android:divider="@color/light_green"
+        android:dividerHeight="1dp"
         android:fadingEdge="none"
-        android:padding="16dp"
+		android:padding="16dp"
         android:listSelector="@android:color/transparent"
         android:scrollbarStyle="outsideOverlay" />
 

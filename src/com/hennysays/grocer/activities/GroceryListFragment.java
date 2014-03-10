@@ -1,7 +1,6 @@
 package com.hennysays.grocer.activities;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import android.os.Bundle;
@@ -17,26 +16,22 @@ import android.widget.Button;
 import android.widget.CheckedTextView;
 import android.widget.ListView;
 
-import com.haarman.listviewanimations.ArrayAdapter;
 import com.haarman.listviewanimations.itemmanipulation.AnimateDismissAdapter;
 import com.haarman.listviewanimations.itemmanipulation.OnDismissCallback;
 import com.hennysays.grocer.R;
+import com.hennysays.grocer.adapters.GroceryListAdapter;
 import com.hennysays.grocer.models.GroceryItem;
 
 public class GroceryListFragment extends Fragment {
 	public static final String TAG = "Grocery List Fragment";
-	private List<Integer> mSelectedPositions;
-	private MyListAdapter mAdapter;
+	private GroceryListAdapter mAdapter;
 	private ArrayList<GroceryItem> mGroceryList;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.fragment_grocery_list, container,false);
-
-		mSelectedPositions = new ArrayList<Integer>();
-
+		View view = inflater.inflate(R.layout.fragment_grocery_list, container,false);		
 		ListView listView = (ListView) view.findViewById(R.id.activity_animateremoval_listview);
-		mAdapter = new MyListAdapter();
+		mAdapter = ((MainActivity) getActivity()).getGroceryListAdapter();
 		mGroceryList = ((MainActivity) getActivity()).getGroceryList();
 		mAdapter.addAll(mGroceryList);
 		final AnimateDismissAdapter<String> animateDismissAdapter = new AnimateDismissAdapter<String>(mAdapter, new MyOnDismissCallback());
@@ -46,13 +41,14 @@ public class GroceryListFragment extends Fragment {
 		Button button = (Button) view.findViewById(R.id.activity_animateremoval_button);
 		button.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onClick(View v) {
-				Collections.sort(mSelectedPositions, Collections.reverseOrder());
-				animateDismissAdapter.animateDismiss(mSelectedPositions);
-				for(Integer indx:mSelectedPositions) {
-					((MainActivity) getActivity()).removeFromGroceryList(indx);
-				}
-				mSelectedPositions.clear();
+			public void onClick(View v) {			
+//				mAdapter.sortSelectedPositions();
+				List<Integer> selectedPositions = mAdapter.getSelectedPositions();
+				animateDismissAdapter.animateDismiss(selectedPositions);
+//				for(Integer indx:selectedPositions) {
+//					((MainActivity) getActivity()).removeFromGroceryList(indx);
+//				}
+				mAdapter.clearSelectedPositions();
 			}
 		});
 
@@ -63,9 +59,9 @@ public class GroceryListFragment extends Fragment {
 				CheckedTextView tv = ((CheckedTextView) view);
 				tv.toggle();
 				if (tv.isChecked()) {
-					mSelectedPositions.add(position);
+					mAdapter.addSelectedPositions(position);
 				} else {
-					mSelectedPositions.remove((Integer) position);
+					mAdapter.removeSelectedPositions(position);
 				}
 			}
 		});
@@ -73,37 +69,29 @@ public class GroceryListFragment extends Fragment {
 		return view;
 	}
 
-	public static ArrayList<Integer> getItems() {
-		ArrayList<Integer> items = new ArrayList<Integer>();
-		for (int i = 0; i < 100; i++) {
-			items.add(i);
-		}
-		return items;
-	}
-
 	private class MyOnDismissCallback implements OnDismissCallback {
 
 		@Override
 		public void onDismiss(AbsListView listView, int[] reverseSortedPositions) {
 			for (int position : reverseSortedPositions) {
-				mAdapter.remove(position);
+				((MainActivity) getActivity()).removeFromGroceryList(position);
 			}
 		}
 	}
 
-	private class MyListAdapter extends ArrayAdapter<GroceryItem> {
-		
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			CheckedTextView tv = (CheckedTextView) convertView;
-			if (tv == null) {
-				tv = (CheckedTextView) LayoutInflater.from(GroceryListFragment.this.getActivity()).inflate(R.layout.fragment_grocery_list_dismissrow, parent, false);
-			}
-			tv.setText(getItem(position).getName());
-			tv.setChecked(mSelectedPositions.contains(position));
-			return tv;
-		}
-	}
+//	private class MyListAdapter extends ArrayAdapter<GroceryItem> {
+//		
+//		@Override
+//		public View getView(int position, View convertView, ViewGroup parent) {
+//			CheckedTextView tv = (CheckedTextView) convertView;
+//			if (tv == null) {
+//				tv = (CheckedTextView) LayoutInflater.from(GroceryListFragment.this.getActivity()).inflate(R.layout.fragment_grocery_list_dismissrow, parent, false);
+//			}
+//			tv.setText(getItem(position).getName());
+//			tv.setChecked(mSelectedPositions.contains(position));
+//			return tv;
+//		}
+//	}
 
 }
 

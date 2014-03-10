@@ -3,13 +3,15 @@ package com.hennysays.grocer.views;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.AutoCompleteTextView;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 
 import com.hennysays.grocer.R;
 
-public class ClearableAutoCompleteTextView extends AutoCompleteTextView {
+public class ClearableAutoCompleteTextView extends EditText {
 	// was the text just cleared?
 	boolean justCleared = false;
  
@@ -19,7 +21,7 @@ public class ClearableAutoCompleteTextView extends AutoCompleteTextView {
  
 		@Override
 		public void onClear() {
-			ClearableAutoCompleteTextView et = ClearableAutoCompleteTextView.this;
+			EditText et = ClearableAutoCompleteTextView.this;
 			et.setText("");
 		}
 	};
@@ -91,6 +93,17 @@ public class ClearableAutoCompleteTextView extends AutoCompleteTextView {
  
 	public void showClearButton() {
 		this.setCompoundDrawablesWithIntrinsicBounds(null, null, imgClearButton, null);
+	}
+	
+	@Override
+	public boolean onKeyPreIme(int keyCode, KeyEvent event) {
+	    if (keyCode == KeyEvent.KEYCODE_BACK) {
+	        // User has pressed Back key. So hide the keyboard
+	        InputMethodManager mgr = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+	        mgr.hideSoftInputFromWindow(this.getWindowToken(), 0);
+	        // TODO: Hide your view as you do it in your activity
+	    }
+	    return false;
 	}
  
 }

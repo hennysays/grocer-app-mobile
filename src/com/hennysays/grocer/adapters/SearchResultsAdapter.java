@@ -81,7 +81,7 @@ public class SearchResultsAdapter extends ArrayAdapter<GroceryItem> {
 			viewHolder.textView2 = (TextView) view.findViewById(R.id.item_price);
 			viewHolder.textView3 = (TextView) view.findViewById(R.id.store_name);
 			viewHolder.textView4 = (TextView) view.findViewById(R.id.store_distance);
-			viewHolder.imageView1 = (ImageView) view.findViewById(R.id.item_image);
+//			viewHolder.imageView1 = (ImageView) view.findViewById(R.id.item_image);
 			viewHolder.imageView2 = (ImageView) view.findViewById(R.id.add_icon);
 			viewHolder.imageView3 = (ImageView) view.findViewById(R.id.place_icon);
 			viewHolder.imageView4 = (ImageView) view.findViewById(R.id.share_icon);
@@ -118,7 +118,7 @@ public class SearchResultsAdapter extends ArrayAdapter<GroceryItem> {
 		viewHolder.textView2.setText(cost);
 		viewHolder.textView3.setText(locationString);
 		viewHolder.textView4.setText(distString);
-		setImageView(viewHolder, position);
+//		setImageView(viewHolder, position);
 
 		viewHolder.imageView2.setOnClickListener(onClickListener);
 		viewHolder.imageView3.setOnClickListener(onClickListener);

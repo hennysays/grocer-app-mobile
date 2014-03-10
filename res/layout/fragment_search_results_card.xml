@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp" >
+    android:padding="8dp" >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,18 +13,20 @@
 
         <TextView
             android:id="@+id/item_name"
-            android:layout_width="0px"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
+            android:textStyle="bold"
             android:textSize="14sp" />
 
         <TextView
             android:id="@+id/item_price"
-            android:layout_width="0px"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="right"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:textColor="@color/light_red" />
     </LinearLayout>
 
     <LinearLayout
@@ -48,11 +50,11 @@
             android:textSize="14sp" />
     </LinearLayout>
 
-    <ImageView
+<!--     <ImageView
         android:id="@+id/item_image"
         android:layout_width="match_parent"
         android:layout_height="250dp"
-        android:scaleType="centerCrop" />
+        android:scaleType="centerCrop" /> -->
 
     <LinearLayout
         android:layout_width="match_parent"

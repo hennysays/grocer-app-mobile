@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="TriStateToggleButtonView">
+        <attr name="label" format="string" />
+        <attr name="button1" format="string" />
+        <attr name="button2" format="string" />
+        <attr name="button3" format="string" />
+        <attr name="labelPosition" format="enum">
+            <enum name="left" value="0" />
+            <enum name="middle" value="1" />
+            <enum name="right" value="2" />
+        </attr>
+    </declare-styleable>
+    <declare-styleable name="LimitDistanceSliderView">
+        <attr name="distance" format="integer"></attr>
+    </declare-styleable>
+
+</resources>

@@ -6,6 +6,8 @@
     android:layout_marginRight="0dp"
     android:layout_gravity="fill_horizontal" 
     android:id="@+id/custom_actionbar"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
  >
  
     <com.hennysays.grocer.views.ClearableAutoCompleteTextView
@@ -13,11 +15,7 @@
         android:id="@+id/search_autocompletetextview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:dropDownWidth="fill_parent"
-        android:dropDownHeight="match_parent"
         android:hint="@string/search_item_hint"
-        android:popupBackground="#3ac47f"
-        android:dropDownVerticalOffset="2dp"
         android:singleLine="true"
         android:gravity="bottom"
         android:imeOptions="actionSearch" >

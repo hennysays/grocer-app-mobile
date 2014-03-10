@@ -1,27 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res/com.hennysays.grocer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/grey_green"
     android:orientation="vertical" >
-	<TextView 
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:text="testing" />
-</LinearLayout>
 
-<!--     <AutoCompleteTextView
-        android:id="@+id/search_view"
+    <LinearLayout
+        android:id="@+id/search_options"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/search_icon"
-        android:hint="@string/search_item_hint"
-        android:singleLine="true"
-        android:imeOptions="actionSearch" >
-    </AutoCompleteTextView>
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
 
-    <Button
-        android:id="@+id/search_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="@string/search_button_label" /> -->
+        <com.hennysays.grocer.views.TriStateToggleButtonView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            custom:labelPosition="left"
+            custom:label="Search By:"
+            custom:button1="Item"
+            custom:button2="Store"
+            custom:button3="Category" />
+
+        <com.hennysays.grocer.views.LimitDistanceSliderView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            custom:distance="50" />
+
+        <com.hennysays.grocer.views.TriStateToggleButtonView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            custom:labelPosition="left"
+            custom:label="Sort Items By:"
+            custom:button1="Name"
+            custom:button2="Store Proximity"
+            custom:button3="Price" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginRight="24dp"
+            android:gravity="center"
+            android:text="N.B. search filter options currently aren't working. These are just UI elements we plan to incorporate later on"
+            android:textSize="10sp"
+            android:textStyle="italic" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/search_autocompletetextview_results_searchfor"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@color/grey"
+        android:clickable="true"
+        android:ellipsize="marquee"
+        android:gravity="center_vertical"
+        android:paddingLeft="16dp"
+        android:singleLine="true"
+        android:textSize="18sp"
+        android:visibility="gone" />
+
+    <ListView
+        android:id="@+id/search_autocompletetextview_results"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@color/grey_green"
+        android:divider="@null" />
+
+</LinearLayout>
